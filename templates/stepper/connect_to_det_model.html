@@ -1,12 +1,12 @@
-<sly-card title="Connect to served Detection Model"
-          :disabled="{disabled: data.current_step < 2, message: 'complete previous step to unlock'}">
+<sly-card title="Connect to Detection Model"
+          :disabled="{disabled: data.current_step < data.steps.connect_to_det_model, message: 'complete previous step to unlock'}">
     <div style="display: flex; flex-direction: column; overflow: hidden">
         <div>
             <div v-if="!data.det_model_connected" style="margin-bottom: 15px">
                 {{{ connect_det_model_notification_box.to_html() }}}
             </div>
             <div v-else>
-                <sly-field title="Model Connected"
+                <sly-field title="Detection Model Connected"
                            description="below are the parameters of the model"
                            style="padding-top: 4px; padding-bottom: 6px">
 
@@ -22,7 +22,7 @@
                         :group-id="data.team_id"
                         :app-session-id.sync="state.det_model_id"
                         :options="data.det_model_options"
-                        :disabled="data.current_step > 2">
+                        :disabled="data.current_step > data.steps.connect_to_det_model">
                 </sly-select-app-session>
             </div>
 
@@ -38,37 +38,13 @@
             </div>
         </div>
 
-
-        <div v-if="data.det_model_classes && data.det_model_connected" style="margin: 0 10px 0 0">
-            <hr/>
-
-            <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between; align-items: center">
-                <h3>Model Classes:</h3>
-                <div>
-                    {{{ toggle_all_det_previews_button.to_html() }}}
-                </div>
-            </div>
-
-            <el-collapse style="width: 100%;"
-                         v-model="state.det_active_names">
-                <el-collapse-item v-for="tag in data.det_model_classes" :name="tag.name">
-                    <template slot="title">
-                        <span style="min-width: 35%; display: inline-block;">
-                            <i class="zmdi zmdi-label mr5" :style="{color: tag.color}"></i>{{ tag.name }}
-                        </span>
-                    </template>
-
-                    <sly-image-slider
-                            v-if="tag.images.length > 0"
-                            :data="tag.images"/>
-                </el-collapse-item>
-            </el-collapse>
-
-        </div>
-
         <div style="margin-top: 15px;">
-            <div v-if="data.current_step < 3">{{{ connect_det_model_button.to_html() }}}</div>
+            <div v-if="data.current_step <= data.steps.connect_to_det_model">{{{ connect_det_model_button.to_html() }}}</div>
             <div v-else style="bottom: 0">{{{ reselect_det_model_button.to_html() }}}</div>
+
+            <div v-if="data.current_step > data.steps.connect_to_det_model" style="margin-top: 17px">
+                {{{ det_model_selected_done_label.to_html() }}}
+            </div>
         </div>
     </div>
 </sly-card>

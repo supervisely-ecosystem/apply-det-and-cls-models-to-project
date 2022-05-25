@@ -44,6 +44,10 @@ project = {
 det_model_data = {}
 det_model_tag_suffix = ''
 
+DataJson()['steps'] = {
+    "input_project": 1,
+    "connect_to_det_model": 2
+}
 DataJson()['current_step'] = 1
 DataJson()['team_id'] = TEAM_ID
 DataJson()['workspace_id'] = WORKSPACE_ID
