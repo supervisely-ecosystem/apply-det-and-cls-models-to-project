@@ -1,0 +1,18 @@
+<sly-card title="Input Data" subtitle="select input project to label">
+    <div style="display:flex; flex-direction: row">
+        {{{ project_selector.to_html() }}}
+    </div>
+    <div style="margin: 15px 0 0 5px; display: flex; flex-direction: column">
+        <div style="width: 420px; margin-bottom: 15px">
+            {{{ download_project_progress.to_html() }}}
+        </div>
+        <div>
+            <div v-if="data.current_step < 2">{{{ download_project_button.to_html() }}}</div>
+            <div v-else>{{{ reselect_project_button.to_html() }}}</div>
+
+            <div v-if="data.current_step > 1" style="margin-top: 17px">
+                {{{ project_downloaded_done_label.to_html() }}}
+            </div>
+        </div>
+    </div>
+</sly-card>

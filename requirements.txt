@@ -1,1 +1,1 @@
-supervisely[apps] == 6.15.0
+git+https://github.com/supervisely/supervisely@widgets-pack-2#egg=supervisely[apps]

@@ -2,7 +2,8 @@ from fastapi import Request, Depends
 
 import src.sly_globals as g
 
-import src.example_card
+import src.input_project
+# import src.connect_to_det_model
 
 
 @g.app.get("/")
