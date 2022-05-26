@@ -10,7 +10,7 @@ from src.connect_to_det_model.routes import *
 from src.connect_to_det_model.functions import *
 from src.connect_to_det_model.widgets import *
 
-DataJson()["model_options"] = {
+DataJson()["det_model_options"] = {
         "sessionTags": ["deployed_nn"],
         "showLabel": False,
         "size": "small"
