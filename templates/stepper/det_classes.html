@@ -1,0 +1,56 @@
+<sly-card title="Detection Model Classes"
+          :options="{collapsable: true}"
+          :collapsed.sync="state.collapsed_steps.det_classes"
+          :disabled="{disabled: data.current_step < data.steps.det_classes, message: 'complete previous steps to unlock'}">
+
+
+    <div v-if="data.current_step <= data.steps.det_classes" style="margin-bottom: 15px">
+        {{{ det_classes_notification_box.to_html() }}}
+    </div>
+    <div class="fflex mt5" style="flex-direction: column; justify-content: flex-start">
+        <el-table v-if="data.classes_table"
+                  :data="data.classes_table"
+                  class="ultra-table"
+                  @selection-change="
+                    (val) => {
+                        state.selected_classes = val.map(x => x.label);
+                        post('/selected_det_classes_changed/');
+                    }">
+            <el-table-column type="selection" width="55"
+                             :selectable="r => !r.isDisabled && data.current_step <= data.steps.det_classes"></el-table-column>
+
+            <el-table-column label="label" align="center">
+                <template scope="scope">
+                    <div>
+                        {{scope.row.label}}
+                    </div>
+                </template>
+            </el-table-column>
+
+
+            <el-table-column label="shape" align="center">
+                <template scope="scope">
+                    <i class="zmdi zmdi-shape mr5"></i>{{scope.row.shapeType}}
+                </template>
+            </el-table-column>
+
+            <el-table-column label="color" align="center">
+                <template scope="scope">
+                    <i class="zmdi zmdi-circle mr5" :style="{color: scope.row.color}"></i>{{scope.row.color}}
+                </template>
+            </el-table-column>
+
+
+        </el-table>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <div v-if="data.current_step <= data.steps.det_classes">{{{ select_det_classes_button.to_html() }}}</div>
+        <div v-else style="bottom: 0">{{{ reselect_det_classes_button.to_html() }}}</div>
+
+        <div v-if="data.current_step > data.steps.det_classes" style="margin-top: 17px">
+            {{{ det_classes_done_label.to_html() }}}
+        </div>
+    </div>
+
+</sly-card>

@@ -6,9 +6,10 @@ from supervisely.sly_logger import logger
 from starlette.staticfiles import StaticFiles
 
 import supervisely as sly
-from supervisely.app import DataJson
+from supervisely.app import DataJson, StateJson
 from supervisely.app.fastapi import create, Jinja2Templates
 from dotenv import load_dotenv
+from collections import OrderedDict
 
 app_root_directory = str(Path(__file__).parent.absolute().parents[0])
 logger.info(f"App root directory: {app_root_directory}")
@@ -45,11 +46,17 @@ project = {
 det_model_data = {}
 det_model_tag_suffix = ''
 
-DataJson()['steps'] = {
+DataJson()['steps'] = OrderedDict({
     "input_project": 1,
-    "connect_to_det_model": 2
-}
+    "connect_to_det_model": 2,
+    "det_classes": 3
+})
 DataJson()['current_step'] = 1
 DataJson()['team_id'] = TEAM_ID
 DataJson()['workspace_id'] = WORKSPACE_ID
 DataJson()['instanceAddress'] = os.getenv('SERVER_ADDRESS')
+StateJson()['collapsed_steps'] = {
+    "input_project": False,
+    "connect_to_det_model": True,
+    "det_classes": True
+}

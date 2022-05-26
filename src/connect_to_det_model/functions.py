@@ -1,8 +1,5 @@
-from urllib.parse import urlparse
-
 import supervisely as sly
 import src.sly_globals as g
-from supervisely import logger
 
 
 def validate_errors(data):

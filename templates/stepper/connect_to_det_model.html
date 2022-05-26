@@ -1,4 +1,6 @@
 <sly-card title="Connect to Detection Model"
+          :options="{collapsable: true}"
+          :collapsed.sync="state.collapsed_steps.connect_to_det_model"
           :disabled="{disabled: data.current_step < data.steps.connect_to_det_model, message: 'complete previous step to unlock'}">
     <div style="display: flex; flex-direction: column; overflow: hidden">
         <div>
