@@ -18,7 +18,7 @@ def select_det_classes_button_clicked(state: supervisely.app.StateJson = Depends
     classes_len = len(state["selected_classes"])
     card_widgets.det_classes_done_label.text = f"{classes_len} detection classes selected successfully"
     DataJson()['current_step'] += 1
-    #state['collapsed_steps'][""] = False
+    state['collapsed_steps']["det_inference_mode"] = False
     run_sync(DataJson().synchronize_changes())
     run_sync(state.synchronize_changes())
 
@@ -33,8 +33,8 @@ def reselect_det_classes_button_clicked(state: supervisely.app.StateJson = Depen
 def selected_det_classes_changed(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     classes_len = len(state["selected_classes"])
     card_widgets.select_det_classes_button.text = f"SELECT {classes_len} CLASSES"
-    if classes_len == 0:
-        card_widgets.select_det_classes_button.disabled = True
-    else:
-        card_widgets.select_det_classes_button.disabled = False
+    # if classes_len == 0:
+    #     card_widgets.select_det_classes_button.disabled = True
+    # else:
+    #     card_widgets.select_det_classes_button.disabled = False
     run_sync(DataJson().synchronize_changes())

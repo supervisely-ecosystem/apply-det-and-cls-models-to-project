@@ -13,7 +13,8 @@ from collections import OrderedDict
 
 app_root_directory = str(Path(__file__).parent.absolute().parents[0])
 logger.info(f"App root directory: {app_root_directory}")
-app_cache_dir = os.path.join(app_root_directory, 'tempfiles', 'cache')
+app_data_dir = os.path.join(app_root_directory, 'tempfiles')
+app_cache_dir = os.path.join(app_data_dir, 'cache')
 
 # TODO: for debug
 load_dotenv(os.path.join(app_root_directory, "debug.env"))
@@ -32,16 +33,19 @@ app.mount("/sly", sly_app)
 app.mount("/static", StaticFiles(directory=os.path.join(app_root_directory, 'static')), name="static")
 templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
-project_dir = os.path.join(app_root_directory, 'tempfiles', 'project_dir')
-output_det_project_dir = os.path.join(app_root_directory, 'tempfiles', 'output_det_project_dir')
+project_dir = os.path.join(app_data_dir, 'project_dir')
+output_det_project_dir = os.path.join(app_data_dir, 'output_det_project_dir')
 output_det_project: sly.Project = None
 output_det_project_meta: sly.ProjectMeta = None
 model_connection_timeout = 500
+model_inference_timeout = 1000
 
 project = {
-    'workspace_id': 0,
-    'project_id': 0
+    'workspace_id': None,
+    'project_id': None,
+    'dataset_ids': []
 }
+images_info = []
 
 det_model_data = {}
 det_model_tag_suffix = ''
@@ -49,7 +53,8 @@ det_model_tag_suffix = ''
 DataJson()['steps'] = OrderedDict({
     "input_project": 1,
     "connect_to_det_model": 2,
-    "det_classes": 3
+    "det_classes": 3,
+    "det_inference_mode": 4
 })
 DataJson()['current_step'] = 1
 DataJson()['team_id'] = TEAM_ID
@@ -58,5 +63,6 @@ DataJson()['instanceAddress'] = os.getenv('SERVER_ADDRESS')
 StateJson()['collapsed_steps'] = {
     "input_project": False,
     "connect_to_det_model": True,
-    "det_classes": True
+    "det_classes": True,
+    "det_inference_mode": True,
 }
