@@ -2,9 +2,9 @@ from supervisely.app import StateJson, DataJson
 
 import src.sly_globals as g
 
-from src.det_inference_mode.routes import *
-from src.det_inference_mode.functions import *
-from src.det_inference_mode.widgets import *
+from src.det_settings.routes import *
+from src.det_settings.functions import *
+from src.det_settings.widgets import *
 
 DataJson()["videoUrl"] = None
 

@@ -3,8 +3,8 @@ from fastapi import Depends, HTTPException
 import supervisely
 from supervisely import logger
 
-import src.det_inference_mode.widgets as card_widgets
-import src.det_inference_mode.functions as card_functions
+import src.det_settings.widgets as card_widgets
+import src.det_settings.functions as card_functions
 import src.sly_functions as global_functions
 
 from supervisely.app import DataJson, StateJson

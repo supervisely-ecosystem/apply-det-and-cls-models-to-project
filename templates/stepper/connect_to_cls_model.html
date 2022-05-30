@@ -1,14 +1,14 @@
-<sly-card title="Connect to Detection Model"
+<sly-card title="Connect to Classification Model"
           :options="{collapsable: true}"
-          :collapsed.sync="state.collapsed_steps.connect_to_det_model"
-          :disabled="{disabled: data.current_step < data.steps.connect_to_det_model, message: 'complete previous step to unlock'}">
+          :collapsed.sync="state.collapsed_steps.connect_to_cls_model"
+          :disabled="{disabled: data.current_step < data.steps.connect_to_cls_model, message: 'complete previous step to unlock'}">
     <div style="display: flex; flex-direction: column; overflow: hidden">
         <div>
-            <div v-if="!data.det_model_connected" style="margin-bottom: 15px">
-                {{{ connect_det_model_notification_box.to_html() }}}
+            <div v-if="!data.cls_model_connected" style="margin-bottom: 15px">
+                {{{ connect_cls_model_notification_box.to_html() }}}
             </div>
             <div v-else>
-                <sly-field title="Detection Model Connected"
+                <sly-field title="Classification Model Connected"
                            description="below are the parameters of the model"
                            style="padding-top: 4px; padding-bottom: 6px">
 
@@ -22,16 +22,16 @@
                 <sly-select-app-session
                         style="height: 100%"
                         :group-id="data.team_id"
-                        :app-session-id.sync="state.det_model_id"
-                        :options="data.det_model_options"
-                        :disabled="data.current_step > data.steps.connect_to_det_model">
+                        :app-session-id.sync="state.cls_model_id"
+                        :options="data.cls_model_options"
+                        :disabled="data.current_step > data.steps.connect_to_cls_model">
                 </sly-select-app-session>
             </div>
 
-            <div v-if="data.det_model_info && data.det_model_connected" style="margin: 22px 5px">
+            <div v-if="data.cls_model_info && data.cls_model_connected" style="margin: 22px 5px">
                 <h3>Model Stats:</h3>
                 <div>
-                    <div v-for="v, k in data.det_model_info" class="mb10" style="word-break: break-all;">
+                    <div v-for="v, k in data.cls_model_info" class="mb10" style="word-break: break-all;">
                         <div style="margin-bottom: 4px">
                             <b>{{ k }}</b>: <span>{{ v }}</span>
                         </div>
@@ -41,8 +41,8 @@
         </div>
 
         <div style="margin-top: 15px;">
-            <div v-if="data.current_step <= data.steps.connect_to_det_model">{{{ connect_det_model_button.to_html() }}}</div>
-            <div v-else style="bottom: 0">{{{ reselect_det_model_button.to_html() }}}</div>
+            <div v-if="data.current_step <= data.steps.connect_to_cls_model">{{{ connect_cls_model_button.to_html() }}}</div>
+            <div v-else style="bottom: 0">{{{ reselect_cls_model_button.to_html() }}}</div>
         </div>
     </div>
 </sly-card>
