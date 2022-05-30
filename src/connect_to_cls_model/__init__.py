@@ -19,3 +19,7 @@ DataJson()["cls_model_options"] = {
 DataJson()['cls_model_info'] = None
 DataJson()['cls_model_connected'] = False
 StateJson()['cls_model_id'] = None
+DataJson()['modelClasses'] = None
+DataJson()['all_classes_collapsed'] = True
+
+StateJson()['activeNames'] = []

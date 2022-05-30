@@ -8,3 +8,69 @@
     width: calc(100% - 20px);
     white-space: normal;
 }
+
+.slider-wrapper .slider-tape .fflex {
+    width: 250px;
+}
+
+.sly-image-slider .slider-wrapper .slider-tape {
+    overflow: hidden;
+}
+
+
+.custom-full-size-slider .slider-tape {
+    width: 100%;
+}
+
+.custom-full-size-slider .slider-wrapper {
+    width: 100%;
+}
+
+
+.custom-full-size-slider .slider-wrapper .slider-nav-btn {
+    border-radius: 30%;
+}
+
+.ultra-table .our-custom-leaf {
+    border: 0;
+    height: 50px;
+    text-transform: uppercase;
+    background: #f6fafd;
+
+    border-bottom: 1px solid #ebebeb;
+
+}
+
+.ultra-table .our-custom-leaf div {
+    color: rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+
+.ultra-table .el-table__body-wrapper {
+    overflow-x: hidden;
+}
+
+.without-margins.input-label {
+    margin: 2px 18px 0 !important;
+}
+
+
+.children-with-margin * {
+    margin: 0 10px 0 0;
+}
+
+.pretty-hr {
+    border: 0;
+    border-bottom: 2px dashed #e9e9e9;
+    background: #fdfdfd;
+}
+
+.field-with-checkbox-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+}

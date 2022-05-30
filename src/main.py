@@ -7,7 +7,7 @@ import src.connect_to_det_model
 import src.det_classes
 import src.det_settings
 import src.connect_to_cls_model
-# import src.cls_settings
+import src.cls_settings
 
 
 @g.app.get("/")

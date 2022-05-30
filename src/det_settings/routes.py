@@ -72,8 +72,8 @@ def show_det_preview_button_clicked(state: supervisely.app.StateJson = Depends(s
     run_sync(state.synchronize_changes())
 
 
-@card_widgets.select_inference_mode_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
-def select_inference_mode_button_clicked(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+@card_widgets.select_det_settings_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
+def select_det_settings_button_clicked(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     DataJson()['current_step'] += 1
     state['collapsed_steps']["connect_to_cls_model"] = False
     run_sync(DataJson().synchronize_changes())
@@ -81,7 +81,7 @@ def select_inference_mode_button_clicked(state: supervisely.app.StateJson = Depe
 
 
 
-@card_widgets.reselect_inference_mode_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
-def reselect_inference_mode_button_clicked(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    DataJson()['current_step'] = DataJson()["steps"]["det_inference_mode"]
+@card_widgets.reselect_det_settings_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
+def reselect_det_settings_button_clicked(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    DataJson()['current_step'] = DataJson()["steps"]["det_settings"]
     run_sync(DataJson().synchronize_changes())

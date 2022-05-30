@@ -1,15 +1,34 @@
 <div id="inference-mode">
-    <sly-card title="Detection inference mode"
-            subtitle="Select one of inference modes for detection model"
+    <sly-card title="Detection settings"
             :options="{collapsable: true}"
-            :collapsed.sync="state.collapsed_steps.det_inference_mode"
-            :disabled="{disabled: data.current_step < data.steps.det_inference_mode, message: 'complete previous steps to unlock'}"
+            :collapsed.sync="state.collapsed_steps.det_settings"
+            :disabled="{disabled: data.current_step < data.steps.det_settings, message: 'complete previous steps to unlock'}"
             >
-        <sly-field title="Select inference mode">
+        <sly-field title="Confidence threshold">
+            <el-input-number 
+                class="mt5" 
+                v-model="state.conf_thres" 
+                :min="0" 
+                :max="1" 
+                :step="0.01"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+        </sly-field>
+        <sly-field title="IOU threshold">
+            <el-input-number 
+                class="mt5" 
+                v-model="state.iou_thres" 
+                :min="0" 
+                :max="1" 
+                :step="0.01"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+        </sly-field>
+        <sly-field title="Inference mode">
             <div>
                 <el-radio 
                     v-model="state.inference_mode" 
-                    :disabled="data.current_step > data.steps.det_inference_mode" 
+                    :disabled="data.current_step > data.steps.det_settings" 
                     label="full">
                     Full image
                 </el-radio>
@@ -17,7 +36,7 @@
             <div>
                 <el-radio 
                     v-model="state.inference_mode" 
-                    :disabled="data.current_step > data.steps.det_inference_mode" 
+                    :disabled="data.current_step > data.steps.det_settings" 
                     label="sliding_window">
                     Sliding window (it is recommended for large images)
                 </el-radio>
@@ -28,34 +47,16 @@
 
     <div v-if="state.inference_mode == 'sliding_window'" class="fflex mt15" style="align-items: stretch">
         <sly-card class="mr15"
-                title="Settings"
-                subtitle="Configure sliding windows parameters"
+                title="Sliding Window Settings"
                 style="min-width: 310px; max-width: 310px;">
-            <div><b>Confidence threshold</b></div>
-            <el-input-number 
-                class="mt5" 
-                v-model="state.conf_thres" 
-                :min="0" 
-                :max="1" 
-                :step="0.01"
-                :disabled="data.current_step > data.steps.det_inference_mode"
-            ></el-input-number>
-            <div class="mt15"><b>IOU threshold (NMS)</b></div>
-            <el-input-number 
-                class="mt5" 
-                v-model="state.iou_thres" 
-                :min="0" 
-                :max="1" 
-                :step="0.01"
-                :disabled="data.current_step > data.steps.det_inference_mode"
-            ></el-input-number>
+            
             <div class="mt15"><b>Window height</b></div>
             <el-input-number 
                 class="mt5" 
                 v-model="state.windowHeight" 
                 :min="1" 
                 :max="10000"
-                :disabled="data.current_step > data.steps.det_inference_mode"
+                :disabled="data.current_step > data.steps.det_settings"
             ></el-input-number>
             <span class="ml10" style="color: gray">pixels</span>
             <div class="mt15"><b>Window width</b></div>
@@ -64,7 +65,7 @@
                 v-model="state.windowWidth" 
                 :min="1" 
                 :max="10000"
-                :disabled="data.current_step > data.steps.det_inference_mode"
+                :disabled="data.current_step > data.steps.det_settings"
             ></el-input-number>
             <span class="ml10" style="color: gray">pixels</span>
             <div class="mt15"><b>Vertical overlap (y axis)</b></div>
@@ -73,7 +74,7 @@
                 v-model="state.overlapY" 
                 :min="0" 
                 :max="10000"
-                :disabled="data.current_step > data.steps.det_inference_mode"
+                :disabled="data.current_step > data.steps.det_settings"
             ></el-input-number>
             <span class="ml10" style="color: gray">pixels</span>
             <div class="mt15"><b>Horizontal overlap (x axis)</b></div>
@@ -82,14 +83,14 @@
                 v-model="state.overlapX" 
                 :min="0" 
                 :max="10000"
-                :disabled="data.current_step > data.steps.det_inference_mode"
+                :disabled="data.current_step > data.steps.det_settings"
             ></el-input-number>
             <span class="ml10" style="color: gray">pixels</span>
             <sly-field style="margin-top: 15px;" title="Border strategy">
                 <el-radio-group class="fflex"
                                 v-model="state.borderStrategy"
                                 style="flex-direction: column; align-items: flex-start"
-                                :disabled="data.current_step > data.steps.det_inference_mode">
+                                :disabled="data.current_step > data.steps.det_settings">
                     <el-radio label="shift_window">
                         <sly-field class="field-radio"
                                 title="Shift window"
@@ -116,15 +117,15 @@
                 v-model="state.fps" 
                 :min="1" 
                 :max="20"
-                :disabled="data.current_step > data.steps.det_inference_mode"
+                :disabled="data.current_step > data.steps.det_settings"
             ></el-input-number>
 
             <div style="margin-top: 15px;">
-                <div v-if="data.current_step <= data.steps.det_inference_mode">{{{ select_inference_mode_button.to_html() }}}</div>
-                <div v-else style="bottom: 0">{{{ reselect_inference_mode_button.to_html() }}}</div>
+                <div v-if="data.current_step <= data.steps.det_settings">{{{ select_det_settings_button.to_html() }}}</div>
+                <div v-else style="bottom: 0">{{{ reselect_det_settings_button.to_html() }}}</div>
     
-                <div v-if="data.current_step > data.steps.det_inference_mode" style="margin-top: 17px">
-                    {{{ inference_mode_selected_done_label.to_html() }}}
+                <div v-if="data.current_step > data.steps.det_settings" style="margin-top: 17px">
+                    {{{ det_settings_selected_done_label.to_html() }}}
                 </div>
             </div>
         </sly-card>
@@ -132,7 +133,7 @@
                   subtitle="Visualize sliding windows on random image as video"
                   style="width: 100%">
             <div slot="header">
-                <div v-if="data.current_step <= data.steps.det_inference_mode">{{{ show_det_preview_button.to_html() }}}</div>
+                <div v-if="data.current_step <= data.steps.det_settings">{{{ show_det_preview_button.to_html() }}}</div>
 
             </div>
             <video v-if="data.videoUrl" controls style="max-height: 650px; max-width: 100%;">

@@ -49,6 +49,7 @@ project = {
     'dataset_ids': []
 }
 images_info = []
+updated_images_ids = set()
 
 det_model_data = {}
 cls_model_data = {}
@@ -58,10 +59,10 @@ DataJson()['steps'] = OrderedDict({
     "input_project": 1,
     "connect_to_det_model": 2,
     "det_classes": 3,
-    "det_inference_mode": 4,
+    "det_settings": 4,
     "connect_to_cls_model": 5,
-    "preferences": 5,
-    "output_data": 5
+    "cls_settings": 6,
+    "output_data": 7
 })
 DataJson()['current_step'] = 1
 DataJson()['team_id'] = TEAM_ID
@@ -71,8 +72,8 @@ StateJson()['collapsed_steps'] = {
     "input_project": False,
     "connect_to_det_model": True,
     "det_classes": True,
-    "det_inference_mode": True,
+    "det_settings": True,
     "connect_to_cls_model": True,
-    "preferences": True,
+    "cls_settings": True,
     "output_data": True
 }

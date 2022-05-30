@@ -40,6 +40,41 @@
             </div>
         </div>
 
+        <div v-if="data.modelClasses && data.cls_model_connected" style="margin: 0 10px 0 0">
+            <div class="pretty-hr"></div>
+
+            <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between; align-items: center">
+                <h3>Model Classes:</h3>
+
+                <div class="fflex">
+                    <el-button v-if="data.all_classes_collapsed" type="text" @click="post('/toggle_all_classes/');">
+                       <i class="zmdi zmdi-unfold-more" style="margin-right: 3px"></i> Expand all
+                    </el-button>
+                    <el-button v-else type="text" @click="post('/toggle_all_classes/');"
+                               style="margin-left: 25px;">
+                       <i class="zmdi zmdi-unfold-less" style="margin-right: 3px"></i> Collapse all
+                    </el-button>
+                </div>
+
+            </div>
+
+            <el-collapse style="width: 100%;"
+                         v-model="state.activeNames">
+                <el-collapse-item v-for="tag in data.modelClasses" :name="tag.name">
+                    <template slot="title">
+                        <span style="min-width: 35%; display: inline-block;">
+                            <i class="zmdi zmdi-label mr5" :style="{color: tag.color}"></i>{{ tag.name }}
+                        </span>
+                    </template>
+
+                    <sly-image-slider
+                            v-if="tag.images.length > 0"
+                            :data="tag.images"/>
+                </el-collapse-item>
+            </el-collapse>
+
+        </div>
+
         <div style="margin-top: 15px;">
             <div v-if="data.current_step <= data.steps.connect_to_cls_model">{{{ connect_cls_model_button.to_html() }}}</div>
             <div v-else style="bottom: 0">{{{ reselect_cls_model_button.to_html() }}}</div>
