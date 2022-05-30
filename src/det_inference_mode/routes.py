@@ -75,7 +75,10 @@ def show_det_preview_button_clicked(state: supervisely.app.StateJson = Depends(s
 @card_widgets.select_inference_mode_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
 def select_inference_mode_button_clicked(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     DataJson()['current_step'] += 1
+    state['collapsed_steps']["connect_to_cls_model"] = False
     run_sync(DataJson().synchronize_changes())
+    run_sync(state.synchronize_changes())
+
 
 
 @card_widgets.reselect_inference_mode_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)

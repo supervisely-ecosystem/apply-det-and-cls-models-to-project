@@ -1,0 +1,29 @@
+import supervisely as sly
+import src.sly_globals as g
+import src.sly_functions as global_functions
+
+
+def connect_to_model(state):
+    model_task_id = state['cls_model_id']
+    if model_task_id is None:
+        raise ValueError('cls_model_id must be a number')
+
+    g.cls_model_data['info'] = global_functions.validate_response_errors(
+        g.api.task.send_request(
+            model_task_id, 
+            "get_session_info",  
+            data={},
+            timeout=g.model_connection_timeout
+        )
+    )
+    
+    g.cls_model_data['model_meta'] = sly.ProjectMeta.from_json(
+        global_functions.validate_response_errors(
+            g.api.task.send_request(
+                model_task_id, 
+                "get_model_meta", 
+                data={}, 
+                timeout=g.model_connection_timeout
+            )
+        )
+    )

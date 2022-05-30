@@ -37,6 +37,9 @@ project_dir = os.path.join(app_data_dir, 'project_dir')
 output_det_project_dir = os.path.join(app_data_dir, 'output_det_project_dir')
 output_det_project: sly.Project = None
 output_det_project_meta: sly.ProjectMeta = None
+output_cls_project_dir = os.path.join(app_data_dir, 'output_cls_project_dir')
+output_cls_project: sly.Project = None
+output_cls_project_meta: sly.ProjectMeta = None
 model_connection_timeout = 500
 model_inference_timeout = 1000
 
@@ -48,13 +51,17 @@ project = {
 images_info = []
 
 det_model_data = {}
-det_model_tag_suffix = ''
+cls_model_data = {}
+cls_model_tag_suffix = ''
 
 DataJson()['steps'] = OrderedDict({
     "input_project": 1,
     "connect_to_det_model": 2,
     "det_classes": 3,
-    "det_inference_mode": 4
+    "det_inference_mode": 4,
+    "connect_to_cls_model": 5,
+    "preferences": 5,
+    "output_data": 5
 })
 DataJson()['current_step'] = 1
 DataJson()['team_id'] = TEAM_ID
@@ -65,4 +72,7 @@ StateJson()['collapsed_steps'] = {
     "connect_to_det_model": True,
     "det_classes": True,
     "det_inference_mode": True,
+    "connect_to_cls_model": True,
+    "preferences": True,
+    "output_data": True
 }
