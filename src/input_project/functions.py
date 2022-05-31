@@ -23,4 +23,4 @@ def download_project(project_selector_widget: ProjectSelector, state: StateJson,
         sly.fs.clean_dir(project_dir)
 
     sly.download_project(g.api, project_info.id, project_dir, cache=g.file_cache,
-                                 progress_cb=pbar.update, save_image_info=True)
+                                 progress_cb=pbar.update, save_image_info=True, save_images=False)
