@@ -1,0 +1,65 @@
+<div style="display: flex; flex-direction: row; overflow: hidden; justify-content: space-between">
+    <sly-card title="Classification labeling Settings" 
+            :options="{collapsable: true}"
+            :collapsed.sync="state.collapsed_steps.cls_settings"
+            subtitle="Adjust settings for images labeling"
+            :disabled="{disabled: data.current_step < data.steps.cls_settings, message: 'complete previous step to unlock'}"
+            style="margin: 0 10px 0 0; width: 50%">
+        <div >
+            <div style="display: flex; flex-direction: column; overflow: hidden;">
+
+                <sly-field title="Apply Classification Model to"
+                        description="You can label specific classes or all images"
+                        style="margin: 10px 0">
+                    <el-radio-group style="margin: 5px 0 0"
+                                    :disabled="data.current_step > data.steps.cls_settings"
+                                    v-model="state.selectedLabelingMode">
+                        <el-radio-button label="Objects"></el-radio-button>
+                        <el-radio-button label="Images"></el-radio-button>
+                    </el-radio-group>
+                    {% include 'stepper/cls_settings/classes_table.html' %}
+                    {% include 'stepper/cls_settings/objects_padding.html' %}
+
+                </sly-field>
+                <sly-field title="Apply topN Predictions"
+                        :description="`Set number of predictions which be applied to ${ state.selectedLabelingMode }`"
+                        style="margin: 10px 0">
+                    <el-input-number
+                            :disabled="data.current_step > data.steps.cls_settings"
+                            v-model="state.topN" :min="1" :max="100"></el-input-number>
+                </sly-field>
+
+                {% include 'stepper/cls_settings/add_confidence.html' %}
+                {% include 'stepper/cls_settings/additional_suffix.html' %}
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 10px">
+
+                <div v-if="data.current_step <= data.steps.cls_settings">{{{ select_cls_settings_button.to_html() }}}</div>
+                <div v-else style="bottom: 0">{{{ reselect_cls_settings_button.to_html() }}}</div>
+
+            </div>
+        </div>
+
+    </sly-card>
+
+    <sly-card title="Preview Results"
+              :options="{collapsable: true}"
+              :collapsed.sync="state.collapsed_steps.cls_settings"
+              subtitle="You can label specific classes or whole images"
+              :disabled="{disabled: data.current_step < data.steps.cls_settings, message: 'complete previous step to unlock'}"
+              style="width: 50%">
+        <div slot="header">
+            <div style="margin-bottom: 10px">
+                {{{ preview_cls_results_button.to_html() }}}
+            </div>
+        </div>
+        <el-collapse-transition v-if="state.preview_is_available">
+            <div v-show="Object.keys(data.preview_grid_gallery.content.annotations).length > 0">
+                <div>{{{ preview_grid_gallery.to_html() }}}</div>
+            </div>
+        </el-collapse-transition>
+        <div v-else>
+            {{{ preview_is_not_available_infobox.to_html() }}}
+        </div>
+    </sly-card>
+</div>

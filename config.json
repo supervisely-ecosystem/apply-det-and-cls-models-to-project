@@ -1,12 +1,15 @@
 {
-    "name": "Application Name",
+    "name": "Apply Detection and Classification Models to Images Project",
     "type": "app",
     "version": "2.0.0",
     "categories": [
-      ""
+      "neural network",
+      "labeling tools",
+      "object detection",
+      "classification"
     ],
-    "description": "application description",
-    "docker_image": "supervisely/base-py-sdk:latest",
+    "description": "Label project images using detector and classify predicted boxes",
+    "docker_image": "supervisely/base-py-branched:1.0.1",
     "entrypoint": "python -m uvicorn src.main:g.app --host 0.0.0.0 --port 8000",
     "port": 8000,
     "task_location": "workspace_tasks",
@@ -15,9 +18,10 @@
     "icon": "https://imgur.com/a9u0M3Y.png",
     "icon_cover": true,
 
-    "instance_version": "6.4.45",
+    "instance_version": "6.4.51",
 
     "context_menu": {
-        "target": ["images_project"]
+        "target": ["images_project"],
+        "context_root": "Neural Networks"
     }
 }

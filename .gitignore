@@ -129,3 +129,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Project
+secret_debug.env
+.vscode
+tempfiles
+static/preview_images

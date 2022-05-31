@@ -1,0 +1,187 @@
+<div id="inference-mode">
+    <sly-card title="Detection settings"
+            :options="{collapsable: true}"
+            :collapsed.sync="state.collapsed_steps.det_settings"
+            :disabled="{disabled: data.current_step < data.steps.det_settings, message: 'complete previous steps to unlock'}"
+            >
+        <sly-field title="Confidence threshold">
+            <el-input-number 
+                class="mt5" 
+                v-model="state.conf_thres" 
+                :min="0" 
+                :max="1" 
+                :step="0.01"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+        </sly-field>
+        <sly-field title="IOU threshold (for NMS)">
+            <el-input-number 
+                class="mt5" 
+                v-model="state.iou_thres" 
+                :min="0" 
+                :max="1" 
+                :step="0.01"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+        </sly-field>
+        <sly-field title="Inference mode">
+            <div>
+                <el-radio 
+                    v-model="state.inference_mode" 
+                    :disabled="data.current_step > data.steps.det_settings" 
+                    label="full">
+                    Full image
+                </el-radio>
+            </div>
+            <div>
+                <el-radio 
+                    v-model="state.inference_mode" 
+                    :disabled="data.current_step > data.steps.det_settings" 
+                    label="sliding_window">
+                    Sliding window (it is recommended for images in high resolution)
+                </el-radio>
+            </div>
+            <div style="margin-top: 15px;" v-if="state.inference_mode == 'full'">
+                <div v-if="data.current_step <= data.steps.det_settings">{{{ select_det_settings_button.to_html() }}}</div>
+                <div v-else style="bottom: 0">{{{ reselect_det_settings_button.to_html() }}}</div>
+    
+                <div v-if="data.current_step > data.steps.det_settings" style="margin-top: 17px">
+                    {{{ det_settings_selected_done_label.to_html() }}}
+                </div>
+            </div>
+        </sly-field>
+
+    </sly-card>
+
+    <div v-if="state.inference_mode == 'sliding_window'" class="fflex mt15" style="align-items: stretch">
+        <sly-card class="mr15"
+                title="Sliding Window Settings"
+                style="min-width: 310px; max-width: 310px;">
+            
+            <div class="mt15"><b>Window height</b></div>
+            <el-input-number 
+                class="mt5" 
+                v-model="state.windowHeight" 
+                :min="1" 
+                :max="10000"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+            <span class="ml10" style="color: gray">pixels</span>
+            <div class="mt15"><b>Window width</b></div>
+            <el-input-number 
+                class="mt5" 
+                v-model="state.windowWidth" 
+                :min="1" 
+                :max="10000"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+            <span class="ml10" style="color: gray">pixels</span>
+            <div class="mt15"><b>Vertical overlap (y axis)</b></div>
+            <el-input-number 
+                class="mt5" 
+                v-model="state.overlapY" 
+                :min="0" 
+                :max="10000"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+            <span class="ml10" style="color: gray">pixels</span>
+            <div class="mt15"><b>Horizontal overlap (x axis)</b></div>
+            <el-input-number 
+                class="mt5" 
+                v-model="state.overlapX" 
+                :min="0" 
+                :max="10000"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+            <span class="ml10" style="color: gray">pixels</span>
+            <sly-field style="margin-top: 15px;" title="Border strategy">
+                <el-radio-group class="fflex"
+                                v-model="state.borderStrategy"
+                                style="flex-direction: column; align-items: flex-start"
+                                :disabled="data.current_step > data.steps.det_settings">
+                    <el-radio label="shift_window">
+                        <sly-field class="field-radio"
+                                title="Shift window"
+                                description="Window is shifted to fit into image">
+                        </sly-field>
+                    </el-radio>
+                    <el-radio style="margin-left: 0" label="add_padding" :disabled="true">
+                        <sly-field class="field-radio"
+                                title="Add padding"
+                                description="Coming soon">
+                        </sly-field>
+                    </el-radio>
+                    <el-radio style="margin-left: 0" label="change_size" :disabled="true">
+                        <sly-field class="field-radio"
+                                title="Change size"
+                                description="Coming soon">
+                        </sly-field>
+                    </el-radio>
+                </el-radio-group>
+            </sly-field>
+            <div><b>Visualization FPS</b></div>
+            <el-input-number 
+                class="mt5" 
+                v-model="state.fps" 
+                :min="1" 
+                :max="20"
+                :disabled="data.current_step > data.steps.det_settings"
+            ></el-input-number>
+
+            <div style="margin-top: 15px;">
+                <div v-if="data.current_step <= data.steps.det_settings">{{{ select_det_settings_button.to_html() }}}</div>
+                <div v-else style="bottom: 0">{{{ reselect_det_settings_button.to_html() }}}</div>
+    
+                <div v-if="data.current_step > data.steps.det_settings" style="margin-top: 17px">
+                    {{{ det_settings_selected_done_label.to_html() }}}
+                </div>
+            </div>
+        </sly-card>
+        <sly-card title="Sliding Window Inference Preview"
+                  subtitle="Visualize sliding windows on random image as video"
+                  style="width: 100%">
+            <div slot="header">
+
+                <div class="field-with-checkbox-container">
+                    <el-checkbox v-model="state.randomImagePreview"
+                                    style="margin: 4px 6px 0 0">
+                    </el-checkbox>
+
+                    <sly-field title="Random Image"
+                                style="margin: 3px 10px 0 0">
+                    </sly-field>
+                    <el-select v-model="state.previewOnImageId"
+                                size="small"
+                                style="margin-right: 10px;"
+                                :disabled="state.randomImagePreview"
+                                placeholder="select image"
+                                filterable>
+                        <el-option
+                                v-for="item in data.imagesForPreview"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+
+                    <div v-if="data.current_step <= data.steps.det_settings">{{{ show_det_preview_button.to_html() }}}</div>
+                </div>
+            </div>
+            <div v-if="data.videoUrl" class="mb10">
+                {{{ sliding_window_preview_notification_box.to_html() }}}
+            </div>
+            <video v-if="data.videoUrl" controls style="max-height: 650px; max-width: 100%;">
+                <source :src="data.videoUrl" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div v-if="!data.videoUrl && !state.previewLoading">Press preview to watch demo video</div>
+
+            <el-collapse-transition>
+                <div v-show="state.previewLoading" style="margin: 7px 0 2px;">
+                    {{{ det_preview_progress.to_html() }}}
+                </div>
+            </el-collapse-transition>
+
+        </sly-card>
+    </div>
+</div>
