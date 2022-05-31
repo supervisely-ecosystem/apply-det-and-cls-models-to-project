@@ -10,10 +10,10 @@ preview_cls_results_button = ElementButton(text='<i class="zmdi zmdi-collection-
 preview_cls_results_button.disabled = True
 
 preview_is_not_available_infobox = NotificationBox(title="Preview is not available", description="No boxes of selected classes on image for preview", box_type='warning')
-select_all_classes_button = ElementButton(text='SELECT ALL', button_type='success', button_size='small')
-deselect_all_classes_button = ElementButton(text='DESELECT ALL', button_type='danger', button_size='small')
+select_all_classes_button = ElementButton(text='<i class="zmdi zmdi-check-all"></i> SELECT ALL', button_type='text', button_size='mini', plain=True)
+deselect_all_classes_button = ElementButton(text='<i class="zmdi zmdi-square-o"></i> DESELECT ALL', button_type='text', button_size='mini', plain=True)
 preview_grid_gallery = GridGallery(columns_number=3, show_opacity_slider=False, sync_views=True)
 
 labeling_progress = SlyTqdm()
 labeling_done_label = DoneLabel(text='done')
-start_labeling_button = ElementButton(text='start labeling')
+start_labeling_button = ElementButton(text='APPLY MODELS TO PROJECT')

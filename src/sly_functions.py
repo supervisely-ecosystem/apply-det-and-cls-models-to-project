@@ -9,20 +9,13 @@ def validate_response_errors(data):
     return data
 
 
-def get_images_to_label(project_dir, selected_classes_names=None, predicted_labels=None, image_info=None) -> dict:
+def get_images_to_label(image_info, selected_classes_names=None, predicted_labels=None) -> dict:
     if selected_classes_names is not None:
         for label in predicted_labels:
             if label.obj_class.name in selected_classes_names:
                 yield tuple([image_info, label])
     else:
-        project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
-        for dataset in project.datasets:
-            items_names = dataset.get_items_names()
-
-            for item_name in items_names:
-                image_info = dataset.get_image_info(item_name=item_name)
-
-                yield image_info
+        yield image_info
 
 def create_output_project(input_project_dir, output_project_dir):
     os.makedirs(output_project_dir, exist_ok=True)

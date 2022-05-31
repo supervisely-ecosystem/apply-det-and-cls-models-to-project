@@ -24,6 +24,7 @@ def connect_to_det_model(state: supervisely.app.StateJson = Depends(supervisely.
         DataJson()['det_model_info'] = g.det_model_data.get('info')
         DataJson()['det_model_connected'] = True
 
+        state["selected_classes"] = [False] * len(g.det_model_data["model_meta"].obj_classes)
         classes_rows = det_classes_functions.generate_rows()
         det_classes_functions.fill_table(classes_rows)
 

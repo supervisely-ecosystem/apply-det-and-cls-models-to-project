@@ -1,13 +1,11 @@
 <sly-card title="Connect to Classification Model"
+          subtitle="Select served Classification Model from list below"
           :options="{collapsable: true}"
           :collapsed.sync="state.collapsed_steps.connect_to_cls_model"
           :disabled="{disabled: data.current_step < data.steps.connect_to_cls_model, message: 'complete previous step to unlock'}">
     <div style="display: flex; flex-direction: column; overflow: hidden">
         <div>
-            <div v-if="!data.cls_model_connected" style="margin-bottom: 15px">
-                {{{ connect_cls_model_notification_box.to_html() }}}
-            </div>
-            <div v-else>
+            <div v-if="data.cls_model_connected">
                 <sly-field title="Classification Model Connected"
                            description="below are the parameters of the model"
                            style="padding-top: 4px; padding-bottom: 6px">

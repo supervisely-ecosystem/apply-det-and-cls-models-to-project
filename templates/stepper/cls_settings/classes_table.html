@@ -1,17 +1,17 @@
 <div style="overflow-x: hidden; ">
     <el-collapse-transition>
-        <div v-show="state.selectedLabelingMode == 'Classes'">
+        <div v-show="state.selectedLabelingMode == 'Objects'">
             <div class="fflex mt5 mb5">
                 <div>{{{ select_all_classes_button.to_html() }}}</div>
                 <div class="ml10">{{{ deselect_all_classes_button.to_html() }}}</div>
-                
             </div>
             <table>
                 <tbody>
                 <tr v-for="(objClass, index) in data.classes_table_content">
                     <td>
                         <el-checkbox 
-                            :disabled="data.current_step > data.steps.cls_settings" 
+                            :disabled="data.current_step > data.steps.cls_settings"
+                            @change="post(/classes_selection_change/);" 
                             v-model="state.selectedClasses[index]"></el-checkbox>
                     </td>
                     <td><i class="zmdi zmdi-circle ml5 mr5" :style="{color: objClass.color}"></i>

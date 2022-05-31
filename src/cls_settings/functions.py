@@ -15,6 +15,15 @@ from supervisely.app import DataJson
 import src.cls_settings.widgets as card_widgets
 
 
+def selected_classes_event(state):
+    g.selected_det_for_cls_classes = []
+    for idx, class_name in enumerate(g.selected_det_classes):
+        if state["selectedClasses"][idx]:
+            g.selected_det_for_cls_classes.append(class_name)
+    classes_len = len(g.selected_det_classes)
+    # TODO: disable preview button if classes_len == 0
+
+
 def get_objects_num_by_classes(selected_classes):
     total = 0
     for row in DataJson()['classes_table_content']:
@@ -26,11 +35,12 @@ def get_objects_num_by_classes(selected_classes):
 def get_classes_table_content():
     table_data = []
     for class_obj in g.det_model_data['model_meta'].obj_classes.to_json():
-        table_data.append({
-            'name': class_obj["title"],
-            'color': class_obj["color"],
-            'shape': class_obj["shape"],
-        })
+        if class_obj["title"] in g.selected_det_classes:
+            table_data.append({
+                'name': class_obj["title"],
+                'color': class_obj["color"],
+                'shape': class_obj["shape"],
+            })
 
     return table_data
 
@@ -142,18 +152,19 @@ def update_project_items_by_predicted_labels(labels_batch, predicted_labels):
                 ann = dataset.get_ann(item_info.name, project_meta=g.output_project.meta)
             else:
                 ann = sly.Annotation(img_size=(item_info.height, item_info.width))
-
             ann_labels = ann.labels
-            ann_labels.append(det_label)
-            ann_labels.append(predicted_label)
+            det_and_cls_label = det_label.add_tags(predicted_label.tags)
+            ann_labels.append(det_and_cls_label)
             updated_ann = ann.clone(labels=ann_labels)
 
         else:  # images
-            # TODO: add det
             item_info = labels_batch[index]
             dataset: sly.Dataset = dsid2dataset[item_info.dataset_id]
-
-            updated_ann = sly.Annotation(img_size=(item_info.height, item_info.width), img_tags=predicted_label)
+            if item_info.id in g.updated_images_ids:
+                updated_ann = dataset.get_ann(item_info.name, project_meta=g.output_project.meta)
+                updated_ann = updated_ann.add_tags(predicted_label)
+            else:
+                updated_ann = sly.Annotation(img_size=(item_info.height, item_info.width), img_tags=predicted_label)
 
         dataset.set_ann(item_name=item_info.name, ann=updated_ann)
 
@@ -162,13 +173,11 @@ def update_project_items_by_predicted_labels(labels_batch, predicted_labels):
 
 
 def update_annotations_in_for_loop(state):
-    selected_classes_list = g.selected_det_for_cls_classes if state['selectedLabelingMode'] == "Classes" else None
-    total = len(g.images_info)
+    selected_classes_list = g.selected_det_for_cls_classes if state['selectedLabelingMode'] == "Objects" else None
 
-    with card_widgets.labeling_progress(message='classifying data', total=total) as pbar:
+    with card_widgets.labeling_progress(message='applying models to project data', total=len(g.images_info)) as pbar:
         for image_info in g.images_info:
 
-            pbar.update()
             det_settings_functions.check_sliding_sizes_by_image(state, image_info)
             inf_settings = {
                 "conf_thres": state["conf_thres"],
@@ -201,9 +210,28 @@ def update_annotations_in_for_loop(state):
             det_ann = sly.Annotation.from_json(det_ann, g.output_project_meta)
             det_labels = det_ann.labels
 
+            # add detection labels of classes NOT for classification model
+            dsid2dataset = f.get_datasets_dict_by_project_dir(g.output_project_dir)
+            dataset: sly.Dataset = dsid2dataset[image_info.dataset_id]
+
+            labels_to_append = []
+            for label in det_labels:
+                if selected_classes_list is None or label.obj_class.name not in selected_classes_list:
+                    labels_to_append.append(label)
+
+            if image_info.id in g.updated_images_ids:
+                ann = dataset.get_ann(image_info.name, project_meta=g.output_project.meta)
+            else:
+                ann = sly.Annotation(img_size=(image_info.height, image_info.width))
+            updated_ann = ann.add_labels(labels_to_append)
+            dataset.set_ann(item_name=image_info.name, ann=updated_ann)
+            if image_info.id not in g.updated_images_ids:
+                g.updated_images_ids.add(image_info.id)
+
+            # add combined det + cls labels of classes for classification model
             labels_batch = []
 
-            for label_info_to_annotate in f.get_images_to_label(g.project_dir, selected_classes_list, det_labels, image_info):
+            for label_info_to_annotate in f.get_images_to_label(image_info, selected_classes_list, det_labels):
                 labels_batch.append(label_info_to_annotate)
 
                 if len(labels_batch) == g.batch_size:
@@ -224,6 +252,8 @@ def update_annotations_in_for_loop(state):
                     padding=state['padding']
                 )
                 update_project_items_by_predicted_labels(labels_batch, predicted_labels)
+            
+            pbar.update()
 
 
 def label_project(state):
@@ -333,9 +363,9 @@ def get_images_for_preview(state, img_num):
 
     g.output_project_meta = f.get_project_meta_merged_with_model_tags(g.project_dir, state)
 
-    selected_classes_list = g.selected_det_for_cls_classes if state['selectedLabelingMode'] == "Classes" else None
+    selected_classes_list = g.selected_det_for_cls_classes if state['selectedLabelingMode'] == "Objects" else None
     labels_batch = []
-    for label_info_to_annotate in f.get_images_to_label(g.project_dir, selected_classes_list, g.preview_boxes, g.preview_image):
+    for label_info_to_annotate in f.get_images_to_label(g.preview_image, selected_classes_list, g.preview_boxes):
         labels_batch.append(label_info_to_annotate)
         if len(labels_batch) == img_num * 5:
             break

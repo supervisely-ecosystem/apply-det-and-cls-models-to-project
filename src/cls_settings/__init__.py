@@ -11,8 +11,8 @@ from src.cls_settings.functions import *
 from src.cls_settings.widgets import *
 
 
-StateJson()['selectedLabelingMode'] = "Classes"
-StateJson()['outputProject'] = "New"
+StateJson()['selectedLabelingMode'] = "Objects"
+StateJson()['outputProject'] = "Labeled project"
 StateJson()['padding'] = 0
 StateJson()['topN'] = 1
 StateJson()['addConfidence'] = True

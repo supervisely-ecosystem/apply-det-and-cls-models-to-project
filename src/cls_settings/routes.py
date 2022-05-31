@@ -7,6 +7,7 @@ from supervisely.app.widgets import ElementButton
 from fastapi import Depends, HTTPException
 
 import src.cls_settings.functions as card_functions
+import src.det_settings.functions as det_settings_functions
 
 import src.cls_settings.widgets as card_widgets
 import src.input_project.widgets as input_project_widgets
@@ -22,10 +23,9 @@ import src.sly_globals as g
 @card_widgets.select_cls_settings_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
 def select_cls_settings_button_clicked(state: sly.app.StateJson = Depends(sly.app.StateJson.from_request)):
     try:
-        if state['selectedLabelingMode'] == "Classes" and len(state['selectedClasses']) == 0:
+        if state['selectedLabelingMode'] == "Objects" and len(state['selectedClasses']) == 0:
             raise ValueError('classes not selected')
 
-        g.selected_classes_list = state['selectedClasses'] # TODO
         DataJson()['labelingDone'] = False
         DataJson()['labelingStarted'] = False
 
@@ -60,16 +60,8 @@ def start_labeling_button_clicked(state: sly.app.StateJson = Depends(sly.app.Sta
     run_sync(DataJson().synchronize_changes())
 
     try:
-        #state['selectedClasses'] = g.selected_det_for_cls_classes  # TODO: till Umar fixing state replacing
-        if state['selectedLabelingMode'] == "Classes" and \
-            (len(state['selectedClasses']) == 0 or \
-            not any(state['selectedClasses'])):
+        if state['selectedLabelingMode'] == "Objects" and len(g.selected_det_for_cls_classes) == 0:
             raise ValueError('Classes not selected')
-
-        g.selected_det_for_cls_classes = []
-        for class_ind, obj_class in enumerate(g.det_model_data["model_meta"].obj_classes):
-            if state["selectedClasses"][class_ind]:
-                g.selected_det_for_cls_classes.append(obj_class.name)
 
         g.cls_model_tag_suffix = ''
         g.updated_images_ids = set()
@@ -115,22 +107,18 @@ def preview_cls_results_button_clicked(state: sly.app.StateJson = Depends(sly.ap
     run_sync(DataJson().synchronize_changes())
     run_sync(state.synchronize_changes())
     try:
-        if state['selectedLabelingMode'] == "Classes" and \
-            (len(state['selectedClasses']) == 0 or \
-            not any(state['selectedClasses'])):
+        if state['selectedLabelingMode'] == "Objects" and len(g.selected_det_for_cls_classes) == 0:
             raise ValueError('Classes not selected')
 
-        g.selected_det_for_cls_classes = []
-        for class_ind, obj_class in enumerate(g.det_model_data["model_meta"].obj_classes):
-            if state["selectedClasses"][class_ind]:
-                g.selected_det_for_cls_classes.append(obj_class.name)
+        # if preview wasn't loaded at detection settings step
+        if g.preview_boxes is None or g.preview_image is None:
+            _, _ = det_settings_functions.get_preview_predictions(state)
 
-        if state['selectedLabelingMode'] == "Classes" and \
+        if state['selectedLabelingMode'] == "Objects" and \
             (g.preview_boxes is None or \
-            g.preview_image is None or \
-            not g.preview_boxes):
+            g.preview_image is None or not g.preview_boxes):
             state["preview_is_available"] = False
-        if state['selectedLabelingMode'] == "Classes":
+        if state['selectedLabelingMode'] == "Objects":
             selected_labels = []
             for label in g.preview_boxes:
                 if label.obj_class.name in g.selected_det_for_cls_classes:
@@ -166,21 +154,16 @@ def preview_cls_results_button_clicked(state: sly.app.StateJson = Depends(sly.ap
 
 @g.app.post('/classes_selection_change/')
 def selected_classes_changed(state: sly.app.StateJson = Depends(sly.app.StateJson.from_request)):
-    pass
-    # if len(state['selectedClasses']) > 0:
-    #     card_widgets.select_preferences_button.disabled = False
-    # else:
-    #     card_widgets.select_preferences_button.disabled = True
-
-    # run_sync(state.synchronize_changes())
-    # run_sync(DataJson().synchronize_changes())
+    card_functions.selected_classes_event(state)
 
 @card_widgets.select_all_classes_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
 def select_all_classes_button_clicked(state: sly.app.StateJson = Depends(sly.app.StateJson.from_request)):
-    state["selectedClasses"] = [True] * len(g.det_model_data["model_meta"].obj_classes)
+    state["selectedClasses"] = [True] * len(g.selected_det_classes)
     run_sync(state.synchronize_changes())
+    card_functions.selected_classes_event(state)
 
 @card_widgets.deselect_all_classes_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
 def deselect_all_classes_button_clicked(state: sly.app.StateJson = Depends(sly.app.StateJson.from_request)):
-    state["selectedClasses"] = [False] * len(g.det_model_data["model_meta"].obj_classes)
+    state["selectedClasses"] = [False] * len(g.selected_det_classes)
     run_sync(state.synchronize_changes())
+    card_functions.selected_classes_event(state)

@@ -14,7 +14,7 @@
                     <el-radio-group style="margin: 5px 0 0"
                                     :disabled="data.current_step > data.steps.cls_settings"
                                     v-model="state.selectedLabelingMode">
-                        <el-radio-button label="Classes"></el-radio-button>
+                        <el-radio-button label="Objects"></el-radio-button>
                         <el-radio-button label="Images"></el-radio-button>
                     </el-radio-group>
                     {% include 'stepper/cls_settings/classes_table.html' %}

@@ -1,5 +1,5 @@
 <sly-card title="Output Project" 
-          subtitle="Launch labeling process and get the results"
+          subtitle="Start labeling by detection and classification models. New project will be created automatically."
           :options="{collapsable: true}"
           :collapsed.sync="state.collapsed_steps.output_data"
           :disabled="{disabled: data.current_step < data.steps.output_data, message: 'complete previous step to unlock'}">

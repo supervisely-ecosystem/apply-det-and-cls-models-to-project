@@ -26,7 +26,7 @@ def connect_to_cls_model(state: supervisely.app.StateJson = Depends(supervisely.
         DataJson()['modelClasses'] = card_functions.get_model_classes_list()
         DataJson()['classes_table_content'] = cls_settings_functions.get_classes_table_content()
         cls_settings_widgets.preview_cls_results_button.disabled = False
-        state["selectedClasses"] = [False] * len(g.det_model_data["model_meta"].obj_classes)
+        state["selectedClasses"] = [False] * len(g.selected_det_classes)
         DataJson()['cls_model_info'] = g.cls_model_data.get('info')
         DataJson()['cls_model_connected'] = True
 

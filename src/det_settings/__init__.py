@@ -28,3 +28,6 @@ StateJson()["progressPreview"] = 0
 StateJson()["progressPreviewMessage"] = "Rendering frames"
 StateJson()["progressPreviewCurrent"] = 0
 StateJson()["progressPreviewTotal"] = 0
+StateJson()["randomImagePreview"] = True
+StateJson()["previewOnImageId"] = None
+DataJson()["imagesForPreview"] = None
