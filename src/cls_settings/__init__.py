@@ -21,7 +21,7 @@ StateJson()['suffixValue'] = None
 
 StateJson()['selectedClasses'] = []
 DataJson()['classes_table_content'] = []
-
+StateJson()["preview_is_available"] = True
 
 DataJson()['outputProject'] = {
     'id': None

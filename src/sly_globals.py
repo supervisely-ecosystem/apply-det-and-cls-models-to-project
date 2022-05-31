@@ -34,12 +34,10 @@ app.mount("/static", StaticFiles(directory=os.path.join(app_root_directory, 'sta
 templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
 project_dir = os.path.join(app_data_dir, 'project_dir')
-output_det_project_dir = os.path.join(app_data_dir, 'output_det_project_dir')
-output_det_project: sly.Project = None
-output_det_project_meta: sly.ProjectMeta = None
-output_cls_project_dir = os.path.join(app_data_dir, 'output_cls_project_dir')
-output_cls_project: sly.Project = None
-output_cls_project_meta: sly.ProjectMeta = None
+
+output_project_dir = os.path.join(app_data_dir, 'output_project_dir')
+output_project: sly.Project = None
+output_project_meta: sly.ProjectMeta = None
 model_connection_timeout = 500
 model_inference_timeout = 1000
 
@@ -50,6 +48,11 @@ project = {
 }
 images_info = []
 updated_images_ids = set()
+preview_image = None
+preview_boxes = None
+selected_det_classes = []
+selected_det_for_cls_classes = []
+batch_size = 64
 
 det_model_data = {}
 cls_model_data = {}

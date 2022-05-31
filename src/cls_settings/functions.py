@@ -6,6 +6,7 @@ import time
 import cv2
 import numpy as np
 
+import src.det_settings.functions as det_settings_functions
 import src.sly_functions as f
 import src.sly_globals as g
 import supervisely as sly
@@ -14,33 +15,24 @@ from supervisely.app import DataJson
 import src.cls_settings.widgets as card_widgets
 
 
-def get_classes_table_content(project_dir):
-    table_data = []
-
-    class2stats = f.get_classes_stats_for_project(project_dir)
-    class2color = f.get_class2color_from_meta(project_dir)
-    class2shape = f.get_class2shape_from_meta(project_dir)
-
-    for class_name in class2stats.keys():
-        if class2shape[class_name] in [sly.Bitmap.geometry_name(),
-                                       sly.Rectangle.geometry_name(),
-                                       sly.Polygon.geometry_name()]:
-            table_data.append({
-                'name': class_name,
-                'color': class2color[class_name],
-                'shape': class2shape[class_name],
-                **class2stats[class_name]
-            })
-
-    return table_data
-
-
 def get_objects_num_by_classes(selected_classes):
     total = 0
     for row in DataJson()['classes_table_content']:
         if row['name'] in selected_classes:
             total += row['obj_num']
     return total
+
+
+def get_classes_table_content():
+    table_data = []
+    for class_obj in g.det_model_data['model_meta'].obj_classes.to_json():
+        table_data.append({
+            'name': class_obj["title"],
+            'color': class_obj["color"],
+            'shape': class_obj["shape"],
+        })
+
+    return table_data
 
 
 def get_data_to_inference(images_batch):
@@ -81,7 +73,7 @@ def get_tags_list_for_predictions(predictions_row):
 
     tags_list = []
     for name, value in zip(pred_classes_list, pred_scores_list):
-        tag_meta = g.output_project_meta.get_tag_meta(f'{name}{g.model_tag_suffix}')
+        tag_meta = g.output_project_meta.get_tag_meta(f'{name}{g.cls_model_tag_suffix}')
 
         if tag_meta.value_type == sly.TagValueType.NONE:
             tags_list.append(sly.Tag(meta=tag_meta))
@@ -143,7 +135,7 @@ def update_project_items_by_predicted_labels(labels_batch, predicted_labels):
     for index, predicted_label in enumerate(predicted_labels):
 
         if len(labels_batch[index]) == 2:  # labels
-            item_info, _ = labels_batch[index]
+            item_info, det_label = labels_batch[index]
             dataset: sly.Dataset = dsid2dataset[item_info.dataset_id]
 
             if item_info.id in g.updated_images_ids:
@@ -152,10 +144,12 @@ def update_project_items_by_predicted_labels(labels_batch, predicted_labels):
                 ann = sly.Annotation(img_size=(item_info.height, item_info.width))
 
             ann_labels = ann.labels
+            ann_labels.append(det_label)
             ann_labels.append(predicted_label)
             updated_ann = ann.clone(labels=ann_labels)
 
         else:  # images
+            # TODO: add det
             item_info = labels_batch[index]
             dataset: sly.Dataset = dsid2dataset[item_info.dataset_id]
 
@@ -168,34 +162,68 @@ def update_project_items_by_predicted_labels(labels_batch, predicted_labels):
 
 
 def update_annotations_in_for_loop(state):
-    selected_classes_list = state['selectedClasses'] if state['selectedLabelingMode'] == "Classes" else None
-    total = get_objects_num_by_classes(selected_classes_list) if state['selectedLabelingMode'] == "Classes" else g.output_project.total_items
+    selected_classes_list = g.selected_det_for_cls_classes if state['selectedLabelingMode'] == "Classes" else None
+    total = len(g.images_info)
 
     with card_widgets.labeling_progress(message='classifying data', total=total) as pbar:
-        labels_batch = []
+        for image_info in g.images_info:
 
-        for label_info_to_annotate in f.get_images_to_label(g.project_dir, selected_classes_list):
-            labels_batch.append(label_info_to_annotate)
             pbar.update()
+            det_settings_functions.check_sliding_sizes_by_image(state, image_info)
+            inf_settings = {
+                "conf_thres": state["conf_thres"],
+                "iou_thres": state["iou_thres"],
+                "inference_mode": state["inference_mode"]
+            }
+            if state["inference_mode"] == "sliding_window":
+                inf_settings["sliding_window_params"] = {
+                    "windowHeight": state["windowHeight"],
+                    "windowWidth": state["windowWidth"],
+                    "overlapY": state["overlapY"],
+                    "overlapX": state["overlapX"],
+                    "borderStrategy": state["borderStrategy"]
+                }
+            ann_pred_res = f.validate_response_errors(
+                g.api.task.send_request(
+                    state['det_model_id'], 
+                    "inference_image_id",
+                    data={
+                        "image_id": image_info.id,
+                        "settings": inf_settings
+                    }, 
+                    timeout=g.model_inference_timeout
+                )
+            )
+            if isinstance(ann_pred_res, dict) and "data" in ann_pred_res.keys():
+                det_ann = ann_pred_res["annotation"]
+            else:
+                det_ann = ann_pred_res
+            det_ann = sly.Annotation.from_json(det_ann, g.output_project_meta)
+            det_labels = det_ann.labels
 
-            if len(labels_batch) == g.batch_size:
+            labels_batch = []
+
+            for label_info_to_annotate in f.get_images_to_label(g.project_dir, selected_classes_list, det_labels, image_info):
+                labels_batch.append(label_info_to_annotate)
+
+                if len(labels_batch) == g.batch_size:
+                    predicted_labels = get_predicted_labels_for_batch(
+                        labels_batch=labels_batch,
+                        model_session_id=state['cls_model_id'],
+                        top_n=state['topN'],
+                        padding=state['padding']
+                    )
+                    update_project_items_by_predicted_labels(labels_batch, predicted_labels)
+                    labels_batch = []
+
+            if len(labels_batch) != 0:
                 predicted_labels = get_predicted_labels_for_batch(
                     labels_batch=labels_batch,
-                    model_session_id=state['model_id'],
+                    model_session_id=state['cls_model_id'],
                     top_n=state['topN'],
                     padding=state['padding']
                 )
                 update_project_items_by_predicted_labels(labels_batch, predicted_labels)
-                labels_batch = []
-
-        if len(labels_batch) != 0:
-            predicted_labels = get_predicted_labels_for_batch(
-                labels_batch=labels_batch,
-                model_session_id=state['model_id'],
-                top_n=state['topN'],
-                padding=state['padding']
-            )
-            update_project_items_by_predicted_labels(labels_batch, predicted_labels)
 
 
 def label_project(state):
@@ -261,7 +289,6 @@ def get_bbox_with_padding(rectangle, pad_percent, img_size):
 
 def clean_up_preview_images_dir():
     preview_files_path = os.path.join('static', 'preview_images')
-
     static_files_dir = os.path.join(g.app_root_directory, preview_files_path)
     os.makedirs(static_files_dir, exist_ok=True)
     sly.fs.clean_dir(static_files_dir)
@@ -306,9 +333,9 @@ def get_images_for_preview(state, img_num):
 
     g.output_project_meta = f.get_project_meta_merged_with_model_tags(g.project_dir, state)
 
-    selected_classes_list = state['selectedClasses'] if state['selectedLabelingMode'] == "Classes" else None
+    selected_classes_list = g.selected_det_for_cls_classes if state['selectedLabelingMode'] == "Classes" else None
     labels_batch = []
-    for label_info_to_annotate in f.get_images_to_label(g.project_dir, selected_classes_list):
+    for label_info_to_annotate in f.get_images_to_label(g.project_dir, selected_classes_list, g.preview_boxes, g.preview_image):
         labels_batch.append(label_info_to_annotate)
         if len(labels_batch) == img_num * 5:
             break
@@ -318,7 +345,7 @@ def get_images_for_preview(state, img_num):
 
     predicted_labels = get_predicted_labels_for_batch(
         labels_batch=labels_batch,
-        model_session_id=state['model_id'],
+        model_session_id=state['cls_model_id'],
         top_n=state['topN'],
         padding=state['padding']
     )

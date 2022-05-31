@@ -1,53 +1,26 @@
 <div style="overflow-x: hidden; ">
     <el-collapse-transition>
         <div v-show="state.selectedLabelingMode == 'Classes'">
-            <el-table
-                    class="ultra-table"
-                    :data="data.classes_table_content"
-                    :disabled="data.current_step > data.steps.cls_settings"
-                    style="width: 740px; max-height: 400px; overflow-y: scroll; margin: 10px 0 0;"
-                    :default-sort="{prop: 'name', order: 'descending'}"
-                    @selection-change="
-                                                (val) => {
-                                                    state.selectedClasses = val.map(x => x.name);
-                                                    post('/classes_selection_change/');
-                                                }">
-                <el-table-column type="selection" :disabled="data.current_step > data.steps.cls_settings"
-                                 width="46px"></el-table-column>
-                <el-table-column sortable prop="name" :label="`Class Name`" width="134px">
-                    <template scope="scope">
-                        <div>
-                            <i class="zmdi zmdi-circle" :style="{color: scope.row.color}"></i>
-                            <span class="ml5 mr10">{{ scope.row.name }}</span>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column sortable prop="shape" :label="`Shape`" align="center" width="120px">
-                    <template scope="scope">
-                                <span>
-                                    <i class="zmdi zmdi-shape"></i>
-                                    {{ scope.row.shape }}
-                                </span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column sortable prop="img_num" :label="`Images Labeled`" align="center">
-                    <template scope="scope">
-                                <span>
-                                    {{ scope.row.img_num }}
-                                </span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column sortable prop="obj_num" :label="`Objects Labeled`" align="center">
-                    <template scope="scope">
-                                <span>
-                                    {{ scope.row.obj_num }}
-                                </span>
-                    </template>
-                </el-table-column>
-
-            </el-table>
+            <div class="fflex mt5 mb5">
+                <div>{{{ select_all_classes_button.to_html() }}}</div>
+                <div class="ml10">{{{ deselect_all_classes_button.to_html() }}}</div>
+                
+            </div>
+            <table>
+                <tbody>
+                <tr v-for="(objClass, index) in data.classes_table_content">
+                    <td>
+                        <el-checkbox 
+                            :disabled="data.current_step > data.steps.cls_settings" 
+                            v-model="state.selectedClasses[index]"></el-checkbox>
+                    </td>
+                    <td><i class="zmdi zmdi-circle ml5 mr5" :style="{color: objClass.color}"></i>
+                    </td>
+                    <td>{{objClass.name}}</td>
+                    <td class="ml5" style="color: #777777">{{objClass.shape}}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </el-collapse-transition>
 </div>

@@ -1,12 +1,9 @@
 <sly-card title="Detection Model Classes"
+          subtitle="Choose classes that should be kept after prediction, other classes will be ignored"
           :options="{collapsable: true}"
           :collapsed.sync="state.collapsed_steps.det_classes"
           :disabled="{disabled: data.current_step < data.steps.det_classes, message: 'complete previous steps to unlock'}">
 
-
-    <div v-if="data.current_step <= data.steps.det_classes" style="margin-bottom: 15px">
-        {{{ det_classes_notification_box.to_html() }}}
-    </div>
     <div class="fflex mt5" style="flex-direction: column; justify-content: flex-start">
         <el-table v-if="data.classes_table"
                   :data="data.classes_table"

@@ -53,10 +53,13 @@
                 {{{ preview_cls_results_button.to_html() }}}
             </div>
         </div>
-        <el-collapse-transition>
+        <el-collapse-transition v-if="state.preview_is_available">
             <div v-show="Object.keys(data.preview_grid_gallery.content.annotations).length > 0">
                 <div>{{{ preview_grid_gallery.to_html() }}}</div>
             </div>
         </el-collapse-transition>
+        <div v-else>
+            {{{ preview_is_not_available_infobox.to_html() }}}
+        </div>
     </sly-card>
 </div>

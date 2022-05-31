@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException
 
 import supervisely
 from supervisely import logger
+import copy
 
 import src.det_settings.widgets as card_widgets
 import src.det_settings.functions as card_functions
@@ -27,9 +28,6 @@ def show_det_preview_button_clicked(state: supervisely.app.StateJson = Depends(s
 
     image_info = random.choice(g.images_info)
     card_functions.check_sliding_sizes_by_image(state, image_info)
-    # TODO: message about vis
-
-    # TODO: select random or specified image
     inf_settings = {
         "conf_thres": state["conf_thres"],
         "iou_thres": state["iou_thres"],
@@ -56,11 +54,13 @@ def show_det_preview_button_clicked(state: supervisely.app.StateJson = Depends(s
     if isinstance(ann_pred_res, dict) and "data" in ann_pred_res.keys():
         predictions = ann_pred_res["data"]["slides"]
     else:
-        # TODO: raise error
-        pass
+        raise ValueError("Selected detection model doesn't support sliding window mode!")
     card_widgets.show_det_preview_button.text = "WRITING VIDEO"
     run_sync(DataJson().synchronize_changes())
-
+    g.preview_image = image_info
+    g.preview_boxes = copy.deepcopy(predictions[-1]["labels"]) # final boxes after NMS
+    for label_ind, label in enumerate(g.preview_boxes):
+        g.preview_boxes[label_ind] = supervisely.Label.from_json(label, g.det_model_data["model_meta"])
     img = g.api.image.download_np(image_info.id)
     file_info = card_functions.write_video(state, img, predictions)
 

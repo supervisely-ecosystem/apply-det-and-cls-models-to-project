@@ -8,75 +8,20 @@ def validate_response_errors(data):
         raise RuntimeError(data["error"])
     return data
 
-def get_classes_names_from_meta(project_meta: sly.ProjectMeta):
-    classes_names = []
-    for obj_class in project_meta.obj_classes:
-        classes_names.append(obj_class.name)
-    return classes_names
 
+def get_images_to_label(project_dir, selected_classes_names=None, predicted_labels=None, image_info=None) -> dict:
+    if selected_classes_names is not None:
+        for label in predicted_labels:
+            if label.obj_class.name in selected_classes_names:
+                yield tuple([image_info, label])
+    else:
+        project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
+        for dataset in project.datasets:
+            items_names = dataset.get_items_names()
 
-def get_class2color_from_meta(project_dir):
-    project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
-    project_meta = project.meta
+            for item_name in items_names:
+                image_info = dataset.get_image_info(item_name=item_name)
 
-    class2color = {}
-    for obj_class in project_meta.obj_classes:
-        class2color[obj_class.name] = '#%02x%02x%02x' % tuple(obj_class.color)
-    return class2color
-
-
-def get_class2shape_from_meta(project_dir):
-    project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
-    project_meta = project.meta
-
-    class2shape = {}
-    for obj_class in project_meta.obj_classes:
-        class2shape[obj_class.name] = obj_class.geometry_type.geometry_name()
-    return class2shape
-
-
-def get_classes_stats_for_project(project_dir) -> dict:
-    project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
-    project_meta = project.meta
-
-    classes_names = get_classes_names_from_meta(project_meta=project_meta)
-
-    classes_stats = {class_name: {'img_num': 0, 'obj_num': 0} for class_name in classes_names}
-
-    for dataset in project.datasets:
-        items_names = dataset.get_items_names()
-
-        for item_name in items_names:
-            annotation = dataset.get_ann(item_name=item_name, project_meta=project_meta)
-
-            objects_num_on_item = {}
-
-            for label in annotation.labels:
-                objects_num_on_item[label.obj_class.name] = objects_num_on_item.get(label.obj_class.name, 0) + 1
-
-            for obj_name, obj_num_on_item in objects_num_on_item.items():
-                classes_stats[obj_name]['img_num'] += 1
-                classes_stats[obj_name]['obj_num'] += obj_num_on_item
-
-    return classes_stats
-
-
-def get_images_to_label(project_dir, selected_classes_names=None) -> dict:
-    project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
-    project_meta = project.meta
-
-    for dataset in project.datasets:
-        items_names = dataset.get_items_names()
-
-        for item_name in items_names:
-            annotation = dataset.get_ann(item_name=item_name, project_meta=project_meta)
-            image_info = dataset.get_image_info(item_name=item_name)
-
-            if selected_classes_names is not None:
-                for label in annotation.labels:
-                    if label.obj_class.name in selected_classes_names:
-                        yield tuple([image_info, label])
-            else:
                 yield image_info
 
 def create_output_project(input_project_dir, output_project_dir):
@@ -119,7 +64,7 @@ def collisions_between_tags_exists(tag_metas, model_tags_metas):
 
 
 def get_project_meta_merged_with_model_tags(project_dir, state):
-    model_meta: sly.ProjectMeta = g.model_data['model_meta']
+    model_meta: sly.ProjectMeta = g.cls_model_data['model_meta']
 
     model_tags_metas = get_model_tags_list(
         model_tags_metas=model_meta.tag_metas,
@@ -129,6 +74,9 @@ def get_project_meta_merged_with_model_tags(project_dir, state):
     )
 
     project = sly.Project(project_dir, mode=sly.OpenMode.READ)
+    # add detection classes
+    meta_with_det = project.meta.merge(g.det_model_data["model_meta"])
+    project.set_meta(meta_with_det)
 
     while collisions_between_tags_exists(project.meta.tag_metas, model_tags_metas):
         model_tags_metas = get_model_tags_list(
