@@ -1,15 +1,15 @@
 <div align="center" markdown>
 
-<img src="" style="width: 100%;"/>
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/poster.png" style="width: 100%;"/>
 
 # Apply Detection and Classification Models to Images Project
 
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#Usage">Usage</a> •
-  <a href="#how-to-run">How to run</a> •
-  <a href="#common-apps">Common Apps</a> •
-  <a href="#screenshot">Screenshot</a>
+  <a href="#How-To-Run">How To Run</a> •
+  <a href="#Result">Result</a> •
+  <a href="#Screenshot">Screenshot</a>
 </p>
 
 
@@ -42,35 +42,32 @@ Application key points:
 # Usage
 
 
-<a data-key="sly-embeded-video-link" href="https://youtu.be/yCGgnEd7dtU" data-video-code="yCGgnEd7dtU">
-    <img src="https://github.com/supervisely-ecosystem/apply-classification-model-to-project/releases/download/v0.0.1/youtube-image-holder.jpg" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:50%;">
+<a data-key="sly-embeded-video-link" href="https://youtu.be/BZeOsvLc83k" data-video-code="BZeOsvLc83k">
+    <img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/youtube-image.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:50%;">
 </a>
 
 
 
 # How To Run
+**Step 0.** Please make sure that you deployed detection and classification models using corresponding serving apps. Learn more in ecosystem…
 
-1. Add [Apply Detection and Classifcation Models to Images Project](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/apply-det-and-cls-models-to-project) application to your Team
+**Step 1.** Add [Apply Detection and Classifcation Models to Images Project](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/apply-det-and-cls-models-to-project) application to your Team
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/apply-det-and-cls-models-to-project" src="" width="350px"/>
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/apply-det-and-cls-models-to-project" src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/thumb.png" width="550px"/>
 
-2. Launch from Images Project's context menu
-<img src="" style="width: 100%;"/>
+**Step 2.** Launch from Images Project's context menu
 
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/runapp.png" style="width: 100%;"/>
 
-# Common Apps
+**Step 3.** Press the Run button in the modal window
 
-1. [Serve MM Classification](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/mmclassification/supervisely/serve) — NeuralNetwork classifier
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/modal.png" style="width: 70%;"/>
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/mmclassification/supervisely/serve" src="https://github.com/supervisely-ecosystem/apply-classification-model-to-project/releases/download/v0.0.1/common-apps-1.png" width="350px"/>
+# Result
 
-2. [Serve YOLOv5](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/yolov5/supervisely/serve) — NeuralNetwork detector
-
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/yolov5/supervisely/serve" src="" width="350px"/>
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/result.png" style="width: 100%;"/>
 
 
 # Screenshot
 
-<img src="" style="width: 100%;"/>
-
-
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/app_ui_screenshot.png" style="width: 100%;"/>
