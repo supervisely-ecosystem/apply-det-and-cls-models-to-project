@@ -1,8 +1,6 @@
 from fastapi import Depends, HTTPException
 
 import supervisely
-from supervisely import logger
-import copy
 
 import src.det_settings.widgets as card_widgets
 import src.det_settings.functions as card_functions
@@ -12,9 +10,6 @@ from supervisely.app.fastapi import run_sync
 from supervisely.app.widgets import ElementButton
 
 import src.sly_globals as g
-
-import random
-
 
 @card_widgets.show_det_preview_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
 def show_det_preview_button_clicked(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
