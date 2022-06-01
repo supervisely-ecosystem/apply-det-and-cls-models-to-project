@@ -7,7 +7,7 @@
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#Usage">Usage</a> •
-  <a href="#How-To-Run">How to run</a> •
+  <a href="#How-To-Run">How To Run</a> •
   <a href="#Result">Result</a> •
   <a href="#Screenshot">Screenshot</a>
 </p>
@@ -42,8 +42,8 @@ Application key points:
 # Usage
 
 
-<a data-key="sly-embeded-video-link" href="https://youtu.be/yCGgnEd7dtU" data-video-code="yCGgnEd7dtU">
-    <img src="https://github.com/supervisely-ecosystem/apply-classification-model-to-project/releases/download/v0.0.1/youtube-image-holder.jpg" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:50%;">
+<a data-key="sly-embeded-video-link" href="https://youtu.be/BZeOsvLc83k" data-video-code="BZeOsvLc83k">
+    <img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/youtube-image.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:50%;">
 </a>
 
 
