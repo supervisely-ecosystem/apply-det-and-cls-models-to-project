@@ -66,8 +66,8 @@ def start_labeling_button_clicked(state: sly.app.StateJson = Depends(sly.app.Sta
         g.cls_model_tag_suffix = ''
         g.updated_images_ids = set()
 
-        card_functions.label_project(state=state)
-        card_functions.upload_project()
+        card_functions.label_project(state)
+        card_functions.upload_project(state)
 
         DataJson()['labelingDone'] = True
 
@@ -110,9 +110,8 @@ def preview_cls_results_button_clicked(state: sly.app.StateJson = Depends(sly.ap
         if state['selectedLabelingMode'] == "Objects" and len(g.selected_det_for_cls_classes) == 0:
             raise ValueError('Classes not selected')
 
-        # if preview wasn't loaded at detection settings step
-        if g.preview_boxes is None or g.preview_image is None:
-            _, _ = det_settings_functions.get_preview_predictions(state)
+        # new model inference
+        _, _ = det_settings_functions.get_preview_predictions(state)
 
         if state['selectedLabelingMode'] == "Objects" and \
             (g.preview_boxes is None or \

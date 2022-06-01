@@ -2,13 +2,35 @@ import supervisely as sly
 from supervisely.app.fastapi import run_sync
 import os
 import cv2
-import math
 import random
 import copy
+import time
 
 import src.sly_globals as g
 import src.sly_functions as f
 import src.det_settings.widgets as card_widgets
+import src.cls_settings.functions as cls_settings_functions
+
+
+def get_images_for_preview(img_info, labels):
+    img = g.api.image.download_np(img_info.id)
+    images_for_preview = []
+    images_for_preview.append({'url': img_info.full_storage_url, 'title': 'source image'})
+    for label in labels:
+        label.draw_contour(img, thickness=5)
+    cls_settings_functions.clean_up_preview_images_dir()
+
+    preview_files_path = os.path.join('static', 'preview_images')
+    static_files_dir = os.path.join(g.app_root_directory, preview_files_path)
+
+    filename = f'{img_info.id}_{time.time_ns()}.png'
+    image_path = os.path.join(static_files_dir, filename)
+
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    cv2.imwrite(image_path, img)
+    images_for_preview.append({'url': os.path.join(preview_files_path, filename), 'title': 'predictions'})
+
+    return images_for_preview
 
 
 def get_images_for_preview_list():
@@ -87,20 +109,21 @@ def get_preview_predictions(state):
         image_info = random.choice(g.images_info)
     else:
         image_info = [image_info for image_info in g.images_info if image_info.id == state['previewOnImageId']][0]
-
-    check_sliding_sizes_by_image(state, image_info)
+    if state["inference_mode"] == "sliding_window":
+        check_sliding_sizes_by_image(state, image_info)
     inf_settings = {
         "conf_thres": state["conf_thres"],
         "iou_thres": state["iou_thres"],
-        "inference_mode": state["inference_mode"],
-        "sliding_window_params": {
+        "inference_mode": state["inference_mode"]
+    }
+    if state["inference_mode"] == "sliding_window":
+        inf_settings["sliding_window_params"] = {
             "windowHeight": state["windowHeight"],
             "windowWidth": state["windowWidth"],
             "overlapY": state["overlapY"],
             "overlapX": state["overlapX"],
             "borderStrategy": state["borderStrategy"]
         }
-    }
     ann_pred_res = f.validate_response_errors(
         g.api.task.send_request(
             state['det_model_id'], 
@@ -112,17 +135,22 @@ def get_preview_predictions(state):
             timeout=g.model_inference_timeout
         )
     )
+    g.preview_boxes = []
+    g.preview_image = image_info
     if isinstance(ann_pred_res, dict) and "data" in ann_pred_res.keys():
         predictions = ann_pred_res["data"]["slides"]
-    else:
-        raise ValueError("Selected detection model doesn't support sliding window mode!")
-    g.preview_image = image_info
-    g.preview_boxes = []
     
-    labels = copy.deepcopy(predictions[-1]["labels"]) # final boxes after NMS
+        labels = copy.deepcopy(predictions[-1]["labels"]) # final boxes after NMS
 
-    for label_json in labels:
-        label = sly.Label.from_json(label_json, g.det_model_data["model_meta"])
-        if label.obj_class.name in g.selected_det_classes:
-            g.preview_boxes.append(label) 
+        for label_json in labels:
+            label = sly.Label.from_json(label_json, g.det_model_data["model_meta"])
+            if label.obj_class.name in g.selected_det_classes:
+                g.preview_boxes.append(label) 
+    else:
+        predictions = sly.Annotation.from_json(ann_pred_res, g.det_model_data["model_meta"])
+        labels = predictions.labels
+        for label in labels:
+            if label.obj_class.name in g.selected_det_classes:
+                g.preview_boxes.append(label) 
+    
     return image_info, predictions

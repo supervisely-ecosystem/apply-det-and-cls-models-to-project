@@ -5,6 +5,14 @@
           :disabled="{disabled: data.current_step < data.steps.output_data, message: 'complete previous step to unlock'}">
     <div>
 
+        <sly-field title="Output project name">
+            <div style="display: inline-block">
+
+                <el-input style="margin: 0 0 10px 0; width: 140px" placeholder="_nn"
+                          v-model="state.outputProject"></el-input>
+            </div>
+        </sly-field>
+
         <el-collapse-transition>
             <div v-show="!data.labelingDone" style="display: flex; flex-direction: row; align-items: center">
                 {{{ start_labeling_button.to_html() }}}

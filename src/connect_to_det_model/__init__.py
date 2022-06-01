@@ -19,3 +19,4 @@ DataJson()["det_model_options"] = {
 DataJson()['det_model_info'] = None
 DataJson()['det_model_connected'] = False
 StateJson()['det_model_id'] = None
+StateJson()["sliding_window_is_available"] = False
