@@ -31,3 +31,4 @@ StateJson()["progressPreviewTotal"] = 0
 StateJson()["randomImagePreview"] = True
 StateJson()["previewOnImageId"] = None
 DataJson()["imagesForPreview"] = None
+DataJson()["full_preview_is_available"] = False

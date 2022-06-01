@@ -266,8 +266,8 @@ def label_project(state):
     update_annotations_in_for_loop(state=state)
 
 
-def upload_project():
-    output_project_name = f"NN_{g.api.project.get_info_by_id(g.project['project_id']).name}"
+def upload_project(state):
+    output_project_name = state["outputProject"]
 
     with card_widgets.labeling_progress(message='uploading project', total=g.output_project.total_items * 2) as pbar:
         project_id, project_name = sly.upload_project(dir=g.output_project_dir, api=g.api,

@@ -1,14 +1,12 @@
 <div class="field-with-checkbox-container">
 
     <el-checkbox v-model="state.addSuffix"
-                 :disabled="data.current_step > data.steps.cls_settings"
-                 style="margin: 0 10px 0 0"></el-checkbox>
+                 style="margin: 0 10px 0 0"
+                 :disabled="data.current_step > data.steps.cls_settings"></el-checkbox>
 
-
-    <sly-field title="Add Suffix"
-               description="Place additional suffix to applied tags"
-               style="margin: 10px 0">
-
+    <sly-field title="Add class/tag name suffix"
+            style="margin: 10px 0"
+               description="Add suffix to model class/tag name if it has conflicts with existing one">
     </sly-field>
 
 </div>
@@ -16,7 +14,7 @@
 <el-collapse-transition>
     <div v-show="state.addSuffix" style="display: inline-block">
 
-        <el-input style="margin: 0 0 10px 0; width: 140px" placeholder="_nn"
+        <el-input style="width: 140px" placeholder="_nn"
                   :disabled="data.current_step > data.steps.cls_settings"
                   v-model="state.suffixValue"></el-input>
     </div>
