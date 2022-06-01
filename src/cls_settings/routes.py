@@ -88,6 +88,7 @@ def start_labeling_button_clicked(state: sly.app.StateJson = Depends(sly.app.Sta
 
         card_widgets.start_labeling_button.loading = False
         run_sync(DataJson().synchronize_changes())
+        sly.app.fastapi.shutdown()
 
 
 @card_widgets.reselect_cls_settings_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
