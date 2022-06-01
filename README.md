@@ -1,15 +1,16 @@
 <div align="center" markdown>
 
-<img src="" style="width: 100%;"/>
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/poster.png" style="width: 100%;"/>
 
 # Apply Detection and Classification Models to Images Project
 
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#Usage">Usage</a> •
-  <a href="#how-to-run">How to run</a> •
-  <a href="#common-apps">Common Apps</a> •
-  <a href="#screenshot">Screenshot</a>
+  <a href="#How-To-Run">How to run</a> •
+  <a href="#Result">Result</a> •
+  <a href="#Common-Apps">Common Apps</a> •
+  <a href="#Screenshot">Screenshot</a>
 </p>
 
 
@@ -52,11 +53,19 @@ Application key points:
 
 1. Add [Apply Detection and Classifcation Models to Images Project](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/apply-det-and-cls-models-to-project) application to your Team
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/apply-det-and-cls-models-to-project" src="" width="350px"/>
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/apply-det-and-cls-models-to-project" src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/thumb.png" width="350px"/>
 
 2. Launch from Images Project's context menu
-<img src="" style="width: 100%;"/>
 
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/runapp.png" style="width: 100%;"/>
+
+3. Press the Run button in the modal window
+
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/modal.png" style="width: 100%;"/>
+
+# Result
+
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/result.png" style="width: 100%;"/>
 
 # Common Apps
 
@@ -66,11 +75,9 @@ Application key points:
 
 2. [Serve YOLOv5](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/yolov5/supervisely/serve) — NeuralNetwork detector
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/yolov5/supervisely/serve" src="" width="350px"/>
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/yolov5/supervisely/serve" src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/common-apps-serve-yolo.png" width="350px"/>
 
 
 # Screenshot
 
-<img src="" style="width: 100%;"/>
-
-
+<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/app_ui_screenshot.png" style="width: 100%;"/>
