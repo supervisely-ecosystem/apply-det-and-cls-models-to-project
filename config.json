@@ -23,5 +23,6 @@
     "context_menu": {
         "target": ["images_project"],
         "context_root": "Neural Networks"
-    }
+    },
+    "poster": "https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/poster.png"
 }
