@@ -27,6 +27,8 @@ def download_selected_project(state: supervisely.app.StateJson = Depends(supervi
         g.project['workspace_id'] = card_widgets.project_selector.get_selected_workspace_id(state)
         g.project['project_id'] = card_widgets.project_selector.get_selected_project_id(state)
         g.project['dataset_ids'] = card_widgets.project_selector.get_selected_datasets(state)
+        project_info = g.api.project.get_info_by_id(g.project['project_id'])
+        state['outputProject'] = f"{project_info.name}_pipeline"
 
         card_functions.cache_images_info(g.project['project_id'])
 

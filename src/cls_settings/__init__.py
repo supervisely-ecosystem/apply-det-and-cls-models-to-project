@@ -12,7 +12,7 @@ from src.cls_settings.widgets import *
 
 
 StateJson()['selectedLabelingMode'] = "Objects"
-StateJson()['outputProject'] = "Labeled project"
+StateJson()['outputProject'] = "Pipeline"
 StateJson()['padding'] = 0
 StateJson()['topN'] = 1
 StateJson()['addConfidence'] = False

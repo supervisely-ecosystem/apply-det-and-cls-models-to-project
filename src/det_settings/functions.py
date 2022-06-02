@@ -33,13 +33,18 @@ def get_images_for_preview(img_info, labels):
     return images_for_preview
 
 
-def get_images_for_preview_list():
+def get_images_for_preview_list(max_size=100):
     images_for_preview_list = []
+
     for image_info in g.images_info:
         images_for_preview_list.append({
             'label': image_info.name,
             'value': image_info.id,
         })
+
+        if len(images_for_preview_list) >= max_size:
+            break
+
     return images_for_preview_list
 
 

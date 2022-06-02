@@ -27,7 +27,8 @@ def connect_to_det_model(state: supervisely.app.StateJson = Depends(supervisely.
             state["sliding_window_is_available"] = True
         
 
-        state["selected_classes"] = [False] * len(g.det_model_data["model_meta"].obj_classes)
+        state["selected_classes"] = [True] * len(g.det_model_data["model_meta"].obj_classes)
+        det_classes_functions.selected_classes_event(state)
         classes_rows = det_classes_functions.generate_rows()
         det_classes_functions.fill_table(classes_rows)
 

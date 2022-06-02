@@ -70,6 +70,7 @@ def start_labeling_button_clicked(state: sly.app.StateJson = Depends(sly.app.Sta
         card_functions.upload_project(state)
 
         DataJson()['labelingDone'] = True
+        sly.app.fastapi.shutdown()
 
     except Exception as ex:
         logger.warn(f'Cannot start labeling: {repr(ex)}', exc_info=True)
@@ -88,7 +89,7 @@ def start_labeling_button_clicked(state: sly.app.StateJson = Depends(sly.app.Sta
 
         card_widgets.start_labeling_button.loading = False
         run_sync(DataJson().synchronize_changes())
-        sly.app.fastapi.shutdown()
+        
 
 
 @card_widgets.reselect_cls_settings_button.add_route(app=g.app, route=ElementButton.Routes.BUTTON_CLICKED)
