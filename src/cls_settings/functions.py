@@ -382,12 +382,12 @@ def get_images_for_preview(state, img_num):
 
     images_for_preview = []
     for label_b, predicted_label in zip(labels_batch, predicted_labels):
-        img_url = get_cropped_image_url(label_b, state) if len(label_b) == 2 else label_b.full_storage_url
+        img_url = get_cropped_image_url(label_b, state) if len(label_b) == 2 else label_b.path_original
         if img_url is None:
             continue
 
         images_for_preview.append({
-            'url': get_cropped_image_url(label_b, state) if len(label_b) == 2 else label_b.full_storage_url,
+            'url': get_cropped_image_url(label_b, state) if len(label_b) == 2 else label_b.path_original,
             'title': stringify_label_tags(predicted_label.tags) if len(label_b) == 2 else stringify_label_tags(predicted_label)
         })
 
