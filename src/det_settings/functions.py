@@ -15,7 +15,7 @@ import src.cls_settings.functions as cls_settings_functions
 def get_images_for_preview(img_info, labels):
     img = g.api.image.download_np(img_info.id)
     images_for_preview = []
-    images_for_preview.append({'url': img_info.full_storage_url, 'title': 'source image'})
+    images_for_preview.append({'url': img_info.path_original, 'title': 'source image'})
     for label in labels:
         label.draw_contour(img, thickness=5)
     cls_settings_functions.clean_up_preview_images_dir()

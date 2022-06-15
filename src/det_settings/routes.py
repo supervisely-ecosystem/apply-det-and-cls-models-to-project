@@ -27,7 +27,7 @@ def show_det_preview_button_clicked(state: supervisely.app.StateJson = Depends(s
     img = g.api.image.download_np(image_info.id)
     file_info = card_functions.write_video(state, img, predictions)
 
-    DataJson()['videoUrl'] = file_info.full_storage_url
+    DataJson()['videoUrl'] = file_info.storage_url
     state['previewLoading'] = False
     card_widgets.show_det_preview_button.loading = False
     run_sync(DataJson().synchronize_changes())
