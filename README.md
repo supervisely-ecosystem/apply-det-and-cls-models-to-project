@@ -1,6 +1,6 @@
 <div align="center" markdown>
 
-<img src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/poster.png" style="width: 100%;"/>
+<img src="https://user-images.githubusercontent.com/48245050/182632575-23d9eb1b-9089-4e08-858f-295046f67b03.png"/>
 
 # Apply Detection and Classification Models to Images Project
 
