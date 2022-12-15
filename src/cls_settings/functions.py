@@ -203,7 +203,7 @@ def update_annotations_in_for_loop(state):
                     timeout=g.model_inference_timeout
                 )
             )
-            if isinstance(ann_pred_res, dict) and "data" in ann_pred_res.keys():
+            if isinstance(ann_pred_res, dict) and "annotation" in ann_pred_res.keys():
                 det_ann = ann_pred_res["annotation"]
             else:
                 det_ann = ann_pred_res
