@@ -23,8 +23,11 @@ def connect_to_det_model(state: supervisely.app.StateJson = Depends(supervisely.
         card_functions.connect_to_model(state)
         DataJson()['det_model_info'] = g.det_model_data.get('info')
         DataJson()['det_model_connected'] = True
-        if "sliding_window_support" in g.det_model_data["info"].keys() and g.det_model_data["info"]["sliding_window_support"]:
-            state["sliding_window_is_available"] = True
+        if "sliding_window_support" in g.det_model_data["info"].keys():
+            if isinstance(g.det_model_data["info"]["sliding_window_support"], bool) and g.det_model_data["info"]["sliding_window_support"]:
+                state["sliding_window_is_available"] = True
+            elif isinstance(g.det_model_data["info"]["sliding_window_support"], str) and g.det_model_data["info"]["sliding_window_support"] != "none":
+                state["sliding_window_is_available"] = True
         
 
         state["selected_classes"] = [True] * len(g.det_model_data["model_meta"].obj_classes)

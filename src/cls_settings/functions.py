@@ -192,17 +192,25 @@ def update_annotations_in_for_loop(state):
                     "overlapX": state["overlapX"],
                     "borderStrategy": state["borderStrategy"]
                 }
-            ann_pred_res = f.validate_response_errors(
-                g.api.task.send_request(
-                    state['det_model_id'], 
-                    "inference_image_id",
-                    data={
-                        "image_id": image_info.id,
-                        "settings": inf_settings
-                    }, 
-                    timeout=g.model_inference_timeout
+            try:
+                ann_pred_res = f.validate_response_errors(
+                    g.api.task.send_request(
+                        state['det_model_id'], 
+                        "inference_image_id",
+                        data={
+                            "image_id": image_info.id,
+                            "settings": inf_settings
+                        }, 
+                        timeout=g.model_inference_timeout
+                    )
                 )
-            )
+            except Exception as ex:
+                sly.logger.error("INFERENCE ERROR", extra={
+                    "nn_session_id": state['det_model_id'],
+                    "image_id": image_info.id,
+                    "settings": str(inf_settings),
+                })
+                raise ex
             if isinstance(ann_pred_res, dict) and "annotation" in ann_pred_res.keys():
                 det_ann = ann_pred_res["annotation"]
             else:
