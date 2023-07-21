@@ -52,7 +52,7 @@ preview_image = None
 preview_boxes = None
 selected_det_classes = []
 selected_det_for_cls_classes = []
-batch_size = 64
+batch_size = 16
 
 det_model_data = {}
 cls_model_data = {}
