@@ -61,6 +61,9 @@ def start_labeling_button_clicked(
     card_widgets.batch_size_input.disabled = True
 
     g.batch_size = card_widgets.batch_size_input.get_value()
+    sly.logger.debug(
+        f"Global batch size is set to {g.batch_size} from InputNumber widget"
+    )
 
     input_project_widgets.reselect_project_button.disabled = True
     connect_det_model_widgets.reselect_det_model_button.disabled = True
