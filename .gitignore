@@ -132,6 +132,5 @@ dmypy.json
 
 # Project
 secret_debug.env
-.vscode
 tempfiles
 static/preview_images
