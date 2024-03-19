@@ -32,7 +32,7 @@
                 <el-radio 
                     v-model="state.inference_mode" 
                     :disabled="data.current_step > data.steps.det_settings" 
-                    label="full">
+                    label="full image">
                     Full image
                 </el-radio>
             </div>
@@ -48,7 +48,7 @@
 
     </sly-card>
 
-    <sly-card v-if="state.inference_mode == 'full'"
+    <sly-card v-if="state.inference_mode == 'full image'"
               :options="{collapsable: true}"
               :collapsed.sync="state.collapsed_steps.det_settings"
               :disabled="{disabled: data.current_step < data.steps.det_settings, message: 'complete previous steps to unlock'}"
