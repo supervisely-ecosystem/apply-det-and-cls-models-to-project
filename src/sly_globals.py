@@ -16,18 +16,19 @@ logger.info(f"App root directory: {app_root_directory}")
 app_data_dir = os.path.join(app_root_directory, 'tempfiles')
 app_cache_dir = os.path.join(app_data_dir, 'cache')
 
-# TODO: for debug
-load_dotenv(os.path.join(app_root_directory, "debug.env"))
-load_dotenv(os.path.join(app_root_directory, "secret_debug.env"), override=True)
+if sly.is_development():
+    load_dotenv(os.path.join(app_root_directory, "debug.env"))
+    # load_dotenv(os.path.join(app_root_directory, "secret_debug.env"), override=True)
+    load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 api = sly.Api.from_env()
 file_cache = sly.FileCache(name="FileCache", storage_root=app_cache_dir)
 app = FastAPI()
 sly_app = create()
 
-TEAM_ID = int(os.getenv('context.teamId'))
-WORKSPACE_ID = int(os.getenv('context.workspaceId'))
-PROJECT_ID = int(os.getenv('modal.state.slyProjectId')) if os.getenv('modal.state.slyProjectId').isnumeric() else None
+TEAM_ID = sly.env.team_id()
+WORKSPACE_ID = sly.env.workspace_id()
+PROJECT_ID = sly.env.project_id(raise_not_found=False)
 
 app.mount("/sly", sly_app)
 app.mount("/static", StaticFiles(directory=os.path.join(app_root_directory, 'static')), name="static")
