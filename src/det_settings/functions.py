@@ -13,15 +13,19 @@ import src.cls_settings.functions as cls_settings_functions
 
 
 def get_images_for_preview(img_info, labels):
-    img = g.api.image.download_np(img_info.id)
-    images_for_preview = []
-    images_for_preview.append({'url': img_info.path_original, 'title': 'source image'})
-    for label in labels:
-        label.draw_contour(img, thickness=5)
     cls_settings_functions.clean_up_preview_images_dir()
-
+    img = g.api.image.download_np(img_info.id)
     preview_files_path = os.path.join('static', 'preview_images')
     static_files_dir = os.path.join(g.app_root_directory, preview_files_path)
+    filename = f'{img_info.id}_{time.time_ns()}.png'
+    image_path = os.path.join(static_files_dir, filename)
+    src_img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    cv2.imwrite(image_path, src_img)
+    images_for_preview = []
+    images_for_preview.append({'url': os.path.join(preview_files_path, filename), 'title': 'source image'})
+    for label in labels:
+        label.draw_contour(img, thickness=5)
+
 
     filename = f'{img_info.id}_{time.time_ns()}.png'
     image_path = os.path.join(static_files_dir, filename)
@@ -117,11 +121,12 @@ def get_preview_predictions(state):
     if state["inference_mode"] == "sliding_window":
         check_sliding_sizes_by_image(state, image_info)
     inf_settings = {
-        "conf_thres": state["conf_thres"],
-        "iou_thres": state["iou_thres"],
+        "conf": state["conf_thres"],
+        "iou": state["iou_thres"],
         "inference_mode": state["inference_mode"]
     }
-    if state["inference_mode"] == "sliding_window":
+    inf_mode = state["inference_mode"]
+    if inf_mode == "sliding_window":
         inf_settings["sliding_window_params"] = {
             "windowHeight": state["windowHeight"],
             "windowWidth": state["windowWidth"],
@@ -150,7 +155,7 @@ def get_preview_predictions(state):
         raise ex
     g.preview_boxes = []
     g.preview_image = image_info
-    if isinstance(ann_pred_res, dict) and "data" in ann_pred_res.keys():
+    if isinstance(ann_pred_res, dict) and "data" in ann_pred_res.keys() and inf_mode == "sliding_window":
         predictions = ann_pred_res["data"]["slides"]
     
         labels = copy.deepcopy(predictions[-1]["labels"]) # final boxes after NMS
@@ -160,7 +165,7 @@ def get_preview_predictions(state):
             if label.obj_class.name in g.selected_det_classes:
                 g.preview_boxes.append(label) 
     else:
-        predictions = sly.Annotation.from_json(ann_pred_res, g.det_model_data["model_meta"])
+        predictions = sly.Annotation.from_json(ann_pred_res["annotation"], g.det_model_data["model_meta"])
         labels = predictions.labels
         for label in labels:
             if label.obj_class.name in g.selected_det_classes:
