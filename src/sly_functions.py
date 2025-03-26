@@ -93,5 +93,5 @@ def get_datasets_dict_by_project_dir(directory):
     project = sly.Project(directory=directory, mode=sly.OpenMode.READ)
     dsid2dataset = {}
     for key, value in zip(project.datasets.keys(), project.datasets.items()):
-        dsid2dataset[g.api.dataset.get_info_by_name(parent_id=g.project['project_id'], name=key).id] = value
+        dsid2dataset[g.api.dataset.get_info_by_name(g.project['project_id'], key).id] = value
     return dsid2dataset
