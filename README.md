@@ -13,7 +13,7 @@
 </p>
 
 
-[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](../../../../supervisely-ecosystem/apply-det-and-cls-models-to-project)
+[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/apply-det-and-cls-models-to-project)
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/apply-det-and-cls-models-to-project)
 [![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/apply-det-and-cls-models-to-project.png)](https://supervisely.com)
@@ -50,7 +50,7 @@ Application key points:
 # How To Run
 **Step 0.** Please make sure that you deployed detection and classification models using corresponding serving apps. Learn more in ecosystem…
 
-**Step 1.** Add [Apply Detection and Classifcation Models to Images Project](../../../../supervisely-ecosystem/apply-det-and-cls-models-to-project) application to your Team
+**Step 1.** Add [Apply Detection and Classifcation Models to Images Project](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/apply-det-and-cls-models-to-project) application to your Team
 
 <img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/apply-det-and-cls-models-to-project" src="https://github.com/supervisely-ecosystem/apply-det-and-cls-models-to-project/releases/download/v0.0.1/thumb.png" width="550px"/>
 
